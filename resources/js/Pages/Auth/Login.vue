@@ -1,11 +1,17 @@
 <script setup>
+import { useRouter } from 'vue-router';
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { saveToken, saveUser } from '@/Services/AuthService';
+import HttpService from '@/Services/HttpService';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import axios from 'axios';
+
+const router = useRouter();
 
 defineProps({
     canResetPassword: {
@@ -22,9 +28,29 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
+const submit = async () => {
+    const response = await HttpService.post('/api/login', {
+        ...form,
+    });
+
+    if (response.status === 201 && response?.data) {
+        const { token, user } = response.data;
+        
+        if (response.data) {
+            saveUser(user);
+            saveToken(token);
+        }
+    }
+
+    // TODO: REMOVE
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
+        onSuccess: (res, ...rest) => {
+            console.log('==> user', res?.props?.auth?.user);
+            if (res?.props?.auth?.user) {
+                saveUser(res?.props?.auth?.user);
+            }
+        },
     });
 };
 </script>
