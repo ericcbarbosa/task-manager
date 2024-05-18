@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\TaskStatusEnum;
 use App\Enums\TaskPriorityEnum;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
 
 class Task extends Model
@@ -19,6 +21,7 @@ class Task extends Model
      * @var array<string, string, TaskStatusEnum, \Date, TaskPriorityEnum>
      */
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'status',
@@ -36,5 +39,9 @@ class Task extends Model
         'status' => TaskStatusEnum::class,
         'priority' => TaskPriorityEnum::class,
     ];
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class,'user_id','id');
+    }
 
 }

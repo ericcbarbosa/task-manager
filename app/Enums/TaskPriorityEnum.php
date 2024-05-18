@@ -9,8 +9,8 @@ enum TaskPriorityEnum: string
 {
     use AttributableEnum;
     
-    #[Description('Hight')]
-    case HIGHT = 'HIGHT';
+    #[Description('High')]
+    case HIGH = 'HIGH';
 
     #[Description('Medium')]
     case MEDIUM = 'MEDIUM';

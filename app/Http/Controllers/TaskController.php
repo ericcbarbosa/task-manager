@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatusEnum;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return response()->json(Task::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create($request)
-    {
-        $task = Task::create(
-            $request->all(),
-        );
-
-        return response()->json($task);
+        $tasks = Task::with('user')->get();
+        return response()->json($tasks);
     }
 
     /**
@@ -32,26 +22,18 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        
-        return inertia('Dashboard',[
-            'task' => $task,
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+            'deadline' => 'required',
+            'priority' => 'required',
         ]);
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $request->merge(['user_id'=> auth()->id()]);
+        $result = Task::create($request->all());
+
+        return response()->json($result);
     }
 
     /**
@@ -59,7 +41,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+            'deadline' => 'required',
+            'priority' => 'required',
+        ]);
+
+        $result = Task::findOrFail($id)::update($request->all());
+        return response()->json($result);
     }
 
     /**
@@ -67,6 +58,31 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $result = Task::findOrFail($id)->delete();
+        return response()->json($result);
+    }
+
+    /**
+     * Update task owner
+     */
+    public function take(string $id)
+    {
+        $result = Task::findOrFail($id)->update([
+            'user_id' => auth()->id(),
+        ]);
+
+        return response()->json($result);
+    }
+
+    /**
+     * Update task status
+     */
+    public function updateStatus(string $id, TaskStatusEnum $status)
+    {
+        $result = Task::findOrFail($id)->update([
+            'status' => $status,
+        ]);
+
+        return response()->json($result);
     }
 }
