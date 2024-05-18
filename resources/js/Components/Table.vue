@@ -12,68 +12,22 @@ const props = defineProps({
     },
 });
 
-const getAllowedColumns = (data) => {
-    const rawData = toRaw(data);
-
-    if (rawData) {
-        return rawData?.map(item => {
-            const keys = props.headers || [];
-            const finalItem = {};
-
-            Object.keys(item)
-                .filter((key) => key && keys?.indexOf(key) > -1)
-                .forEach((key) => {
-                    if (item[key]) {
-                        finalItem[key] = item[key];
-                    }
-                });
-
-            return finalItem;
-        });
-    }
-
-    return [];
-}
-
-const tableRows = computed(() => {
-    const rawData = toRaw(props.data);
-
-    if (rawData) {
-        return rawData?.map(item => {
-            const keys = props.headers || [];
-            const finalItem = {};
-
-            Object.keys(item)
-                .filter((key) => key && keys?.indexOf(key) > -1)
-                .forEach((key) => {
-                    if (item[key]) {
-                        finalItem[key] = item[key];
-                    }
-                });
-
-            return finalItem;
-        });
-    }
-
-    return [];
-});
-
-console.log(tableRows.value)
+const emit = defineEmits(['rowClick']);
 
 </script>
 
 <template>
-    <table class="min-w-full divide-y divide-gray-300 border-collapse">
-        <thead class="bg-gray-50">
+    <table class="table-component min-w-full divide-y divide-gray-300 border-collapse">
+        <thead class="table-component__header bg-white">
             <slot name="header" />
 
-            <th v-for="header in headers" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+            <th v-for="header in headers" class="py-3.5 pl-4 pr-3 text-left font-semibold text-gray-900 capitalize sm:pl-6">
                 {{header}}
             </th>
         </thead>
 
-        <tbody class="divide-y divide-gray-200 bg-white">
-            <tr v-for="(row, rowIndex) in tableRows">
+        <tbody class="table-component__body divide-y divide-gray-100 bg-white">
+            <tr v-for="(row, rowIndex) in props.data" @click="emit('rowClick', row, rowIndex)" class="table-component__body__td">
                 <slot name="row" :item="row" :index="rowIndex" />
             </tr>
         </tbody>

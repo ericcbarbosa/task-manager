@@ -1,5 +1,9 @@
 import './bootstrap';
 import '../css/app.css';
+// import '@fortawesome/fontawesome-free/js/fontawesome';
+// import '@fortawesome/fontawesome-free/js/solid';
+// import '@fortawesome/fontawesome-free/js/regular';
+
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
