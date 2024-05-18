@@ -49,4 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('tasks', TaskController::class)->names([
         'index' => 'dashboard',
     ]);
+    Route::patch('tasks/{task}/take', [TaskController::class, 'TaskController@take']);
+    Route::patch('tasks/{task}/status', [TaskController::class, 'TaskController@updateStatus']);
 });
