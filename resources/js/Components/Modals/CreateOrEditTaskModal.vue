@@ -78,7 +78,7 @@ const { defineField, handleSubmit, isSubmitting, errors, setValues, resetForm } 
     initialValues: initialValues,
 });
 
-const hasTask = computed(() => props.isEditing && props.task && props.task?.name);
+const hasTask = computed(() => props.isEditing && props.task);
 
 const setFormValues = () => {
     if (props.isEditing && props.task) {
@@ -138,6 +138,7 @@ const handleChangePriority = (taskId, newPriority) => {
 
 const handleClose = () => {
     emit('close');
+    resetForm();
 }
 
 </script>

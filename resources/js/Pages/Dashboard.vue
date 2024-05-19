@@ -5,7 +5,7 @@ import SeverityEnum from '@/Enums/SeverityEnum.js';
 import {createTask, deleteTask, getTasks, takeTask, updateTask, updateTaskStatus} from '@/Services/TaskSevice';
 import Table from '@/Components/Table.vue';
 import Avatar from '@/Components/Avatar.vue';
-import {computed, onMounted, ref, watch} from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import FloatingButton from '@/Components/Buttons/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
 import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue';
@@ -149,22 +149,6 @@ const onTakeOwnershipTask = async (taskId) => {
     loadingTakeOwnership.value = false;
 }
 
-const changedTask = computed(() => {
-    if (data.value) {
-        const dataTask = data.value?.find((task) => task?.id === selectedRow.value?.id);
-
-        if (
-            dataTask?.status !== selectedRow.value?.status
-            || dataTask?.priority !== selectedRow.value?.priority
-            || dataTask?.id !== selectedRow.value?.id
-        ) {
-            return dataTask;
-        }
-
-        return selectedRow.value;
-    }
-});
-
 const onCompleteEditModal = async (taskId) => {
     loadingEditTask.value = true;
 
@@ -182,8 +166,38 @@ const onCloseEditModal = () => {
     selectedRow.value = null;
 }
 
+const onCloseViewModal = async () => {
+    isEditing.value = false;
+    showViewModal.value = false;
+    showEditOrCreateModal.value = false;
+    selectedRow.value = null;
+}
+
+const changedTask = computed(() => {
+    if (data.value) {
+        const dataTask = data.value?.find((task) => task?.id === selectedRow.value?.id);
+
+        if (
+            dataTask?.status !== selectedRow.value?.status
+            || dataTask?.priority !== selectedRow.value?.priority
+            || dataTask?.id !== selectedRow.value?.id
+        ) {
+            return dataTask;
+        }
+
+        return selectedRow.value;
+    }
+});
+
+watch(() => showViewModal.value, () => {
+    if (showViewModal.value === false) {
+        selectedRow.value = null;
+        isEditing.value = false;
+    }
+})
+
 watch(changedTask, (newTask) => {
-  selectedRow.value = newTask;
+    selectedRow.value = newTask;
 });
 
 const isLoadingSomenthing = computed(() => {
@@ -260,7 +274,7 @@ const isLoadingSomenthing = computed(() => {
                 :show="showViewModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
-                @close="showViewModal = false"
+                @close="onCloseViewModal"
                 @delete="onDeleteTask"
                 @take="onTakeOwnershipTask"
                 @edit="onShowEditModal"
@@ -270,6 +284,7 @@ const isLoadingSomenthing = computed(() => {
             />
 
             <CreateOrEditTaskModal
+                :key="`${isEditing && selectedRow ? 'edit-modal' : 'create-modal'}`"
                 v-if="isEditing && selectedRow || !isEditing"
                 :loading="loading || loadingCreateTask || loadingEditTask"
                 :show="showEditOrCreateModal"
