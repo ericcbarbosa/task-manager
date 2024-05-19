@@ -9,9 +9,6 @@ import TextInput from '@/Components/Form/TextInput.vue';
 import { saveToken, saveUser } from '@/Services/AuthService';
 import HttpService from '@/Services/HttpService';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import axios from 'axios';
-
-const router = useRouter();
 
 defineProps({
     canResetPassword: {
@@ -104,8 +101,16 @@ const submit = async () => {
             <div class="flex items-center justify-end mt-4">
                 <Link
                     v-if="canResetPassword"
-                    :href="route('password.request')"
+                    :href="route('register')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Create an account
+                </Link>
+
+                <Link
+                    v-if="canResetPassword"
+                    :href="route('password.request')"
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ml-4"
                 >
                     Forgot your password?
                 </Link>
