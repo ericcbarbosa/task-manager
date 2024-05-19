@@ -77,10 +77,10 @@ class TaskController extends Controller
     /**
      * Update task status
      */
-    public function updateStatus(string $id, TaskStatusEnum $status)
+    public function updateStatus(Request $request, string $id)
     {
         $result = Task::findOrFail($id)->update([
-            'status' => $status,
+            'status' => $request->get('status'),
         ]);
 
         return response()->json($result);
