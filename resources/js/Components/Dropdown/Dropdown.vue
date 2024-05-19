@@ -50,7 +50,7 @@ const open = ref(false);
 
 <template>
     <div class="relative">
-        <div v-if="!grouped" @click.stop="open = !open">
+        <div class="cursor-pointer" v-if="!grouped" @click.stop="open = !open">
             <slot name="trigger" />
         </div>
         <div v-else class="flex flex-row">

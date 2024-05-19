@@ -2,7 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
-import {createTask, deleteTask, getTasks, takeTask, updateTask} from '@/Services/TaskSevice';
+import {createTask, deleteTask, getTasks, takeTask, updateTask, updateTaskStatus} from '@/Services/TaskSevice';
 import Table from '@/Components/Table.vue';
 import Avatar from '@/Components/Avatar.vue';
 import {computed, onMounted, ref, watch} from 'vue';
@@ -83,7 +83,10 @@ const onShowEditModal = async (item) => {
 }
 
 const onCreateTaskClick = () => {
+    isEditing.value = false;
+    selectedRow.value = null;
     showViewModal.value = false;
+
     showEditOrCreateModal.value = true;
 }
 
@@ -110,6 +113,7 @@ const onDeleteTask = async (taskId) => {
             await fetchTasks();
 
             showEditOrCreateModal.value = false;
+            showViewModal.value = false;
         }
     }
 
@@ -126,6 +130,7 @@ const onEditTask = async (task) => {
             await fetchTasks();
 
             showEditOrCreateModal.value = false;
+            selectedRow.value = null;
         }
     }
 
@@ -138,6 +143,8 @@ const onTakeOwnershipTask = async (taskId) => {
     if (taskId) {
         await takeTask(taskId);
         await fetchTasks();
+
+        showViewModal.value = false
     }
 
     loadingTakeOwnership.value = false;
@@ -154,6 +161,17 @@ const changedTask = computed(() => {
         return selectedRow.value;
     }
 });
+
+const onCompleteEditModal = async (taskId) => {
+    loadingEditTask.value = true;
+
+    if (taskId) {
+        await updateTaskStatus(taskId, StatusEnum.COMPLETED);
+        showViewModal.value = false;
+    }
+
+    loadingEditTask.value = false;
+}
 
 watch(changedTask, (newTask) => {
   selectedRow.value = newTask;
@@ -229,7 +247,7 @@ const isLoadingSomenthing = computed(() => {
 
             <ViewTaskModal
                 v-if="isEditing && selectedRow"
-                :loading="loading"
+                :loading="loading || loadingDeleteTask || loadingCreateTask || loadingEditTask"
                 :show="showViewModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
@@ -237,6 +255,7 @@ const isLoadingSomenthing = computed(() => {
                 @delete="onDeleteTask"
                 @take="onTakeOwnershipTask"
                 @edit="onShowEditModal"
+                @complete="onCompleteEditModal"
                 @change-status="fetchTasks"
                 @change-priority="fetchTasks"
             />

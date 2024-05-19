@@ -7,6 +7,7 @@ import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
 import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";
 import { dateFormat } from "@/Helpers/DateHelper.js";
 import Avatar from "@/Components/Avatar.vue";
+import StatusEnum from "@/Enums/StatusEnum.js";
 
 const localLoading = ref(false);
 const formattedDeadline = computed(() => dateFormat(props.task.deadline));
@@ -29,16 +30,22 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close', 'delete', 'take', 'edit', 'change-status', 'change-priority']);
+const emit = defineEmits(['close', 'delete', 'take', 'edit', 'change-status', 'change-priority', 'complete']);
 
 const onDeleteTask = () => {
     emit('delete', props.task.id);
 };
+
 const onEditTask = () => {
     emit('edit', props.task);
 };
+
 const onTakeTask = () => {
     emit('take', props.task.id);
+};
+
+const onCompleteTask = () => {
+    emit('complete', props.task.id);
 };
 
 </script>
@@ -92,8 +99,17 @@ const onTakeTask = () => {
                 <p class="mb-0 text-lg">
                     {{ formattedDeadline }}
                 </p>
-                <smal class="text-gray-700 select-none">mm/dd/yyyy</smal>
+                <small class="text-gray-700 select-none">mm/dd/yyyy</small>
             </section>
+
+            <Button
+                :severity="SeverityEnum.SUCCESS"
+                :disabled="loading || localLoading || props.task.status === StatusEnum.COMPLETED"
+                icon="thumbs-up"
+                class="w-full text-[16px] py-3"
+                @click="onCompleteTask">
+                {{ props.task.status === StatusEnum.COMPLETED ? 'Completed' : 'Mark as complete' }}
+            </Button>
         </div>
 
         <template #footer>

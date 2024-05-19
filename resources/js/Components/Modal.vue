@@ -98,11 +98,11 @@ const maxWidthClass = computed(() => {
                         :class="maxWidthClass"
                     >
                         <div v-if="show">
-                            <slot name="header">
-                                <div v-if="props.title" class="w-full bg-gray-200 border-b border-gray-300 p-4">
-                                    <h3 class="text-2xl font-bold">{{props.title}}</h3>
-                                </div>
-                            </slot>
+                            <div class="w-full bg-gray-200 border-b border-gray-300 p-4">
+                                <slot name="header">
+                                    <h3 v-if="props.title" class="text-2xl font-bold">{{props.title}}</h3>
+                                </slot>
+                            </div>
 
                             <div class="p-6 bg-white">
                                 <slot />
