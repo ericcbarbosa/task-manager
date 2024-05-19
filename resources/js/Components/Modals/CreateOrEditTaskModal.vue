@@ -26,6 +26,7 @@ const props = defineProps({
     },
     task: {
         type: Object,
+        default: null,
     },
 });
 

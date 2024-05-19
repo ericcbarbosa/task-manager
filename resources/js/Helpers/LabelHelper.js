@@ -13,8 +13,8 @@ export const getStatusLabel = (status = StatusEnum.PENDING) => {
 
 export const PRIORITY_LABELS = {
     [PriorityEnum.HIGH]: 'High',
-    [PriorityEnum.MEDIUM]: 'Pending',
-    [PriorityEnum.LOW]: 'Pending',
+    [PriorityEnum.MEDIUM]: 'Medium',
+    [PriorityEnum.LOW]: 'Low',
 };
 
 export const getPriorityLabel = (priority = PriorityEnum.LOW) => {

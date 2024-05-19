@@ -45,8 +45,7 @@ const submit = async () => {
     // TODO: REMOVE
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
-        onSuccess: (res, ...rest) => {
-            console.log('==> user', res?.props?.auth?.user);
+        onSuccess: (res) => {
             if (res?.props?.auth?.user) {
                 saveUser(res?.props?.auth?.user);
             }

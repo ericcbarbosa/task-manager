@@ -7,18 +7,16 @@ import { createTask, deleteTask, getTasks, takeTask, updateTaskStatus } from '@/
 import Table from '@/Components/Table.vue';
 import Avatar from '@/Components/Avatar.vue';
 import Tag from '@/Components/Tag.vue';
-import { onMounted, ref, nextTick } from 'vue';
-import Button from '@/Components/Button.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import { onMounted, ref } from 'vue';
+import Dropdown from '@/Components/Dropdown/Dropdown.vue';
+import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
 import FloatingButton from '@/Components/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
-import CreateOrEditTask from '@/Components/Modals/CreateOrEditTaskModal.vue';
+import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
 import StatusEnum from '@/Enums/StatusEnum';
-import { getTheme } from '@/Theme/ButtonsTheme';
-import Icon from '@/Components/Icon.vue';
+import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
 
 const loading = ref(false);
 const isEditing = ref(false);
@@ -56,12 +54,12 @@ const onRowClick = async (item) => {
     showViewModal.value = true;
 }
 
-const onViewModalEditClick = async (item) => {
+const onShowEditModal = async (item) => {
     showViewModal.value = false;
 
     selectedRow.value = item;
     isEditing.value = true;
-
+    
     showEditOrCreateModal.value = true;
 }
 
@@ -194,36 +192,13 @@ const onChangeStatus = async (taskId, status) => {
                             </td>
 
                             <td id="task-actions" class="w-32 p-4 text-right font-medium text-gray-900">
-                                <div class="relative">
-                                    <Dropdown align="right" width="48">
-                                        <template #trigger>
-                                            <button :class="getTheme(SeverityEnum.INFO)">
-                                                Actions
-                                                <Icon icon="ellipsis-vertical" class="ml-2" />
-                                            </button>
-                                        </template>
-
-                                        <template #content>
-                                            <DropdownLink
-                                                v-if="$page.props.auth.user.id === item.user.id"
-                                                @click="onTakeTask(item.id)"
-                                                class="text-blue-600">
-                                                <Icon icon="hand" class="mr-2" />
-                                                Take
-                                            </DropdownLink>
-
-                                            <DropdownLink @click="onTakeTask(item.id)" class="text-green-600">
-                                                <Icon icon="pencil" class="mr-2" />
-                                                Edit
-                                            </DropdownLink>
-
-                                            <DropdownLink @click="onTakeTask(item.id)" class="text-red-600">
-                                                <Icon icon="trash" class="mr-2" />
-                                                Delete
-                                            </DropdownLink>
-                                        </template>
-                                    </Dropdown>
-                                </div>
+                                <TaskActionsDropdown 
+                                    :current-user-id="$page.props.auth.user.id"
+                                    :task="item"
+                                    @edit="onShowEditModal"
+                                    @take="fetchTasks"
+                                    @delete="fetchTasks"
+                                />
                             </td>
                         </template>
                     </Table>
@@ -238,10 +213,10 @@ const onChangeStatus = async (taskId, status) => {
                 @close="showViewModal = false"
                 @delete="onDeleteTask"
                 @take="onTakeTask"
-                @edit="onViewModalEditClick"
+                @edit="onShowEditModal"
             />
 
-            <CreateOrEditTask
+            <CreateOrEditTaskModal
                 v-if="isEditing && selectedRow || !isEditing"
                 :show="showEditOrCreateModal"
                 :task="selectedRow"

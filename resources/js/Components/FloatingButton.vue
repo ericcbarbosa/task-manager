@@ -2,6 +2,7 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import Button from '@/Components/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
+import Icon from './Icon.vue';
 
 const props = defineProps({
     severity: {
@@ -23,6 +24,6 @@ const emit = defineEmits(['click']);
         @click="emit('click')"
         :padded="false"
         :rounded="false">
-        <i class="fas fa-plus text-2xl"></i>
+        <Icon icon="plus" class="text-2xl" />
     </Button>
 </template>

@@ -74,7 +74,6 @@ const onTakeTask = () => {
                     <Button
                         :severity="SeverityEnum.DEFAULT"
                         class="ml-4"
-                        :disabled="isSubmitting"
                         @click="emit('close')">
                         Cancel
                     </Button>

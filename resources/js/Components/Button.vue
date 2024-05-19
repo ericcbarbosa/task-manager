@@ -47,7 +47,7 @@ const allClasses = computed(() => {
 
 <template>
     <button type="button" :class="allClasses" @click.stop="emit('click')">
-        <Icon :icon="icon" class="mr-2"/>
+        <Icon v-if="icon" :icon="icon" class="mr-2"/>
         <slot></slot>
     </button>
 </template>
