@@ -15,7 +15,7 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <teleport to="body">
-            <div class="absolute top-10 right-10 z-[100]">
+            <div class="fixed top-10 right-10 z-[100]">
                 <Toast
                     class="mb-3"
                     v-for="(notification, index) in ToastService.notifications"

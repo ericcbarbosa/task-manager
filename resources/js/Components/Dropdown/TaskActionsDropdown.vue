@@ -19,14 +19,19 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    disabledTakeOn: {
+        type: Boolean,
+        required: false,
+    },
 });
 
-const emit = defineEmits(['take', 'edit', 'delete']);
+const emit = defineEmits(['take', 'edit', 'delete', 'start-fetch', 'end-fetch']);
 
 const loading = ref(false);
 
 const onTakeTask = async (taskId) => {
     loading.value = true;
+    emit('start-fetch');
     
     if (taskId) {
         const success = await takeTask(taskId);
@@ -37,6 +42,7 @@ const onTakeTask = async (taskId) => {
     }
 
     loading.value = false;
+    emit('end-fetch');
 }
 
 const onEditTask = async (task) => {
@@ -45,6 +51,7 @@ const onEditTask = async (task) => {
 
 const onDeleteTask = async (taskId) => {
     loading.value = true;
+    emit('start-fetch');
 
     if (taskId) {
         const success = await deleteTask(taskId);
@@ -55,9 +62,13 @@ const onDeleteTask = async (taskId) => {
     }
 
     loading.value = false;
+    emit('end-fetch');
 }
 
 const onChangeStatus = async (taskId, status) => {
+    loading.value = true;
+    emit('start-fetch');
+
     if (taskId) {
         const success = await updateTaskStatus(taskId, status);
 
@@ -65,6 +76,9 @@ const onChangeStatus = async (taskId, status) => {
             emit('change-status', StatusEnum.IN_PROGRESS);
         }
     }
+
+    loading.value = false;
+    emit('end-fetch');
 }
 </script>
 
@@ -73,6 +87,7 @@ const onChangeStatus = async (taskId, status) => {
         <Dropdown align="right" width="48" grouped>
             <template #before-trigger>
                 <Button
+                    :disabled="disabledTakeOn || loading"
                     :rounded="false"
                     :severity="SeverityEnum.SUCCESS"
                     class="rounded-l-md pr-3 border-r border-r-green-700"
@@ -82,7 +97,7 @@ const onChangeStatus = async (taskId, status) => {
             </template>
 
             <template #trigger>
-                <button :class="[
+                <button :disabled="loading" :class="[
                     getTheme(SeverityEnum.SUCCESS, { rounded: false, spaced: false }),
                     'h-full rounded-r-md pr-3'
                 ]">

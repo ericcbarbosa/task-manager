@@ -38,14 +38,17 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['change-status'])
+const emit = defineEmits(['change-status', 'start-fetch', 'end-fetch'])
 
 const onChangePriority = async (taskId, status) => {
+    emit('start-fetch');
+
     if (taskId && props.makeRequest) {
         await updateTaskPriority(taskId, status);
     }
 
     emit('change-priority', taskId, status);
+    emit('end-fetch');
 }
 </script>
 

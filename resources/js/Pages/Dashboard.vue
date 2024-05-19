@@ -14,8 +14,14 @@ import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
 import TaskStatusDropdown from '@/Components/Dropdown/TaskStatusDropdown.vue';
 import {ToastService} from "@/Services/ToastService.js";
 import {getStatusLabel} from "@/Helpers/LabelHelper.js";
+import StatusEnum from "@/Enums/StatusEnum.js";
 
 const loading = ref(false);
+const loadingCreateTask = ref(false);
+const loadingDeleteTask = ref(false);
+const loadingEditTask = ref(false);
+const loadingTakeOwnership = ref(false);
+
 const isEditing = ref(false);
 const data = ref([]);
 const selectedRow = ref();
@@ -36,6 +42,7 @@ const fetchTasks = async () => {
 
     const tasks = await getTasks();
     data.value = tasks;
+
     loading.value = false;
 }
 
@@ -49,7 +56,7 @@ const onDeleteTaskSuccess = async () => {
     await fetchTasks();
 }
 
-const onChangeStatusSuccess = async(status) => {
+const onChangeStatusSuccess = async (status) => {
     ToastService.success(`Good! Task status updated to "${getStatusLabel(status)}"`);
     await fetchTasks();
 }
@@ -81,7 +88,7 @@ const onCreateTaskClick = () => {
 }
 
 const onCreateTask = async (task) => {
-    loading.value = true;
+    loadingCreateTask.value = true;
 
     if (task) {
         await createTask(task);
@@ -89,10 +96,12 @@ const onCreateTask = async (task) => {
 
         showEditOrCreateModal.value = false;
     }
+
+    loadingCreateTask.value = false;
 }
 
 const onDeleteTask = async (taskId) => {
-    loading.value = true;
+    loadingDeleteTask.value = true;
 
     if (taskId) {
         const success = await deleteTask(taskId);
@@ -103,10 +112,12 @@ const onDeleteTask = async (taskId) => {
             showEditOrCreateModal.value = false;
         }
     }
+
+    loadingDeleteTask.value = false;
 }
 
 const onEditTask = async (task) => {
-    loading.value = true;
+    loadingEditTask.value = true;
 
     if (task) {
         const success = await updateTask(task);
@@ -117,15 +128,19 @@ const onEditTask = async (task) => {
             showEditOrCreateModal.value = false;
         }
     }
+
+    loadingEditTask.value = false;
 }
 
 const onTakeOwnershipTask = async (taskId) => {
-    loading.value = true;
+    loadingTakeOwnership.value = true;
 
     if (taskId) {
         await takeTask(taskId);
         await fetchTasks();
     }
+
+    loadingTakeOwnership.value = false;
 }
 
 const changedTask = computed(() => {
@@ -144,17 +159,14 @@ watch(changedTask, (newTask) => {
   selectedRow.value = newTask;
 });
 
-/*
-* TODO:
-*   - Adicionar dropdowns de Status e Priority no Edit
-*   - Exibir avatar no View modal
-*   - Adicionar Read Me
-*   - Metodo para adicionar imagem do avatar?
-*   - Animação do Toast
-*   - Request duplicado
-*   - Loadings
-*
-* */
+const isLoadingSomenthing = computed(() => {
+    return loading.value
+        || loadingTakeOwnership.value
+        || loadingDeleteTask.value
+        || loadingDeleteTask.value
+        || loadingCreateTask.value
+        || loadingEditTask.value
+});
 
 </script>
 
@@ -168,7 +180,7 @@ watch(changedTask, (newTask) => {
             </template>
 
             <section class="max-w-7xl mx-auto sm:px-6 lg:px-4 py-4 my-4">
-                <Panel>
+                <Panel :loading="isLoadingSomenthing" class="relative min-h-[350px]">
                     <Table v-if="data" :headers="headers" :data="data" @row-click="onRowClick">
                         <template #row="{ item = {} }">
                             <td id="task-owner" class="w-24 p-4 text-sm font-medium text-gray-900">
@@ -192,17 +204,22 @@ watch(changedTask, (newTask) => {
                                     :taskId="item.id"
                                     :status="item.status"
                                     @change-status="fetchTasks"
+                                    @start-fetch="loadingEditTask = true"
+                                    @end-fetch="loadingEditTask = false"
                                 />
                             </td>
 
                             <td id="task-actions" class="w-48 p-4 text-right font-medium text-gray-900">
-                                <TaskActionsDropdown 
+                                <TaskActionsDropdown
                                     :current-user-id="$page.props.auth.user.id"
                                     :task="item"
+                                    :disabled-take-on="item.status === StatusEnum.IN_PROGRESS"
                                     @edit="onShowEditModal"
                                     @take="onTakeOwnershipSuccess"
                                     @delete="onDeleteTaskSuccess"
                                     @change-status="onChangeStatusSuccess"
+                                    @start-fetch="loadingEditTask = true"
+                                    @end-fetch="loadingEditTask = false"
                                 />
                             </td>
                         </template>
@@ -212,6 +229,7 @@ watch(changedTask, (newTask) => {
 
             <ViewTaskModal
                 v-if="isEditing && selectedRow"
+                :loading="loading"
                 :show="showViewModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
@@ -225,6 +243,7 @@ watch(changedTask, (newTask) => {
 
             <CreateOrEditTaskModal
                 v-if="isEditing && selectedRow || !isEditing"
+                :loading="loading || loadingCreateTask || loadingEditTask"
                 :show="showEditOrCreateModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
@@ -236,6 +255,7 @@ watch(changedTask, (newTask) => {
     </div>
 
     <FloatingButton
+        :disabled="loading"
         :severity="SeverityEnum.SUCCESS"
         @click="onCreateTaskClick"
     />

@@ -34,7 +34,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits('click');
+const emit = defineEmits(['click']);
 
 const allClasses = computed(() => {
     const themeConfigs = {

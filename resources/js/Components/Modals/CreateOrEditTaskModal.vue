@@ -21,6 +21,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
     isEditing: {
         type: Boolean,
         default: false,
@@ -32,7 +36,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close', 'create', 'edit']);
-const loading = ref(false);
 
 const initialValues = {
     name: '',
@@ -106,8 +109,8 @@ const onSubmit = handleSubmit(
 // Fields
 const [name, nameAttrs] = defineField('name');
 const [description, descriptionAttrs] = defineField('description');
-const [status, statusAttrs] = defineField('status');
-const [priority, priorityAttrs] = defineField('priority');
+const [status] = defineField('status');
+const [priority] = defineField('priority');
 const [deadline, deadlineAttrs] = defineField('deadline');
 
 const handleChangeStatus = (taskId, newStatus) => {
@@ -130,7 +133,7 @@ const handleChangePriority = (taskId, newPriority) => {
         :show="props?.show"
         show-footer
         @close="emit('close')">
-        <div class="min-h-3.5">
+        <div :class="['min-h-3.5', loading ? 'opacity-60 pointer-events-none select-none' : '']">
             <form v-show="isEditing && task || !isEditing">
                 <div class="mt-4">
                     <InputLabel for="name" value="Name" />
@@ -165,7 +168,7 @@ const handleChangePriority = (taskId, newPriority) => {
                     <InputLabel for="status" value="Status" />
 
                     <TaskStatusDropdown
-                        :taskId="props.task.id"
+                        :taskId="isEditing ? props.task.id : null"
                         :status="status"
                         align="left"
                         width="48"
@@ -180,7 +183,7 @@ const handleChangePriority = (taskId, newPriority) => {
                     <InputLabel for="priority" value="Priority" />
 
                     <TaskPriorityDropdown
-                        :task-id="props.task.id"
+                        :taskId="isEditing ? props.task.id : null"
                         :priority="priority"
                         align="right"
                         width="48"
@@ -222,7 +225,7 @@ const handleChangePriority = (taskId, newPriority) => {
                     type="submit"
                     :severity="SeverityEnum.SUCCESS"
                     class="ml-4"
-                    :disabled="isSubmitting"
+                    :disabled="isSubmitting || loading"
                     @click="onSubmit">
                     {{isEditing ? 'Save task' : 'Create task'}}
                 </Button>

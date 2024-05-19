@@ -56,7 +56,7 @@ const open = ref(false);
         <div v-else class="flex flex-row">
             <slot name="before-trigger" />
 
-            <div @click.stop="open = !open">
+            <div class="cursor-pointer" @click.stop="open = !open">
                 <slot name="trigger" />
             </div>
         </div>

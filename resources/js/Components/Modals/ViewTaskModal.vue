@@ -1,6 +1,5 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
-import Panel from '@/Components/Panel.vue';
+import {defineProps, defineEmits, ref} from 'vue';
 import Modal from '@/Components/Modal.vue';
 import Button from '@/Components/Buttons/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
@@ -9,8 +8,14 @@ import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue
 import { dateFormat } from "@/Helpers/DateHelper.js";
 import Avatar from "@/Components/Avatar.vue";
 
+const localLoading = ref(false);
+
 const props = defineProps({
     show: {
+        type: Boolean,
+        default: false,
+    },
+    loading: {
         type: Boolean,
         default: false,
     },
@@ -43,7 +48,7 @@ const onTakeTask = () => {
         :show="props?.show"
         show-footer
         @close="emit('close')">
-        <div class="min-h-3.5">
+        <div :class="['min-h-3.5', loading || localLoading ? 'opacity-60 pointer-events-none select-none' : '']">
             <strong>Description:</strong>
             <section class="border rounded-lg bg-slate-100 border-slate-200 p-2 mt-1 mb-3">
                 <p class="mb-0 text-lg">{{ props.task.description }}</p>
@@ -66,6 +71,8 @@ const onTakeTask = () => {
                     align="left"
                     width="48"
                     @change-status="emit('change-status')"
+                    @start-fetch="localLoading = true"
+                    @end-fetch="localLoading = false"
                 />
 
                 <TaskPriorityDropdown
@@ -74,6 +81,8 @@ const onTakeTask = () => {
                     align="right"
                     width="48"
                     @change-priority="emit('change-priority')"
+                    @start-fetch="localLoading = true"
+                    @end-fetch="localLoading = false"
                 />
             </section>
 
@@ -94,7 +103,7 @@ const onTakeTask = () => {
 
                 <Button
                     :severity="SeverityEnum.DANGER"
-                    :disabled="false"
+                    :disabled="loading || localLoading"
                     icon="trash"
                     class="ml-4"
                     @click="onDeleteTask">
@@ -103,7 +112,7 @@ const onTakeTask = () => {
 
                 <Button
                     :severity="SeverityEnum.INFO"
-                    :disabled="false"
+                    :disabled="loading || localLoading"
                     icon="hand"
                     class="ml-4"
                     @click="onTakeTask">
@@ -112,7 +121,7 @@ const onTakeTask = () => {
 
                 <Button
                     :severity="SeverityEnum.SUCCESS"
-                    :disabled="false"
+                    :disabled="loading || localLoading"
                     icon="pencil"
                     class="ml-4"
                     @click="onEditTask">
