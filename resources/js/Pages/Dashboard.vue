@@ -121,6 +121,17 @@ watch(changedTask, (newTask) => {
   selectedRow.value = newTask;
 });
 
+/*
+* TODO:
+*   - Alterar Take para Take on e alterar status para in progress
+*   - Adicionar dropdowns de Status e Priority no Edit
+*   - Exibir avatar no View modal
+*   - Error handling + Toast
+*   - Adicionar Read Me
+*   - Metodo para adicionar imagem do avatar?
+*
+* */
+
 </script>
 
 <template>
@@ -162,13 +173,14 @@ watch(changedTask, (newTask) => {
                                 />
                             </td>
 
-                            <td id="task-actions" class="w-32 p-4 text-right font-medium text-gray-900">
+                            <td id="task-actions" class="w-48 p-4 text-right font-medium text-gray-900">
                                 <TaskActionsDropdown 
                                     :current-user-id="$page.props.auth.user.id"
                                     :task="item"
                                     @edit="onShowEditModal"
                                     @take="fetchTasks"
                                     @delete="fetchTasks"
+                                    @change-status="fetchTasks"
                                 />
                             </td>
                         </template>

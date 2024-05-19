@@ -6,6 +6,10 @@ const props = defineProps({
         type: String,
         default: 'right',
     },
+    grouped: {
+        type: Boolean,
+        default: false,
+    },
     width: {
         type: String,
         default: '48',
@@ -46,8 +50,15 @@ const open = ref(false);
 
 <template>
     <div class="relative">
-        <div @click.stop="open = !open">
+        <div v-if="!grouped" @click.stop="open = !open">
             <slot name="trigger" />
+        </div>
+        <div v-else class="flex flex-row">
+            <slot name="before-trigger" />
+
+            <div @click.stop="open = !open">
+                <slot name="trigger" />
+            </div>
         </div>
 
         <!-- Full Screen Dropdown Overlay -->

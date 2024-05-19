@@ -3,10 +3,12 @@ import { defineProps, defineEmits, ref } from 'vue';
 import Dropdown from '@/Components/Dropdown/Dropdown.vue';
 import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
 import Icon from '@/Components/Icon.vue';
+import Button from '@/Components/Button.vue';
 
 import { getTheme } from '@/Theme/ButtonsTheme';
-import { deleteTask, takeTask, updateTask } from '@/Services/TaskSevice';
+import {deleteTask, takeTask, updateTaskStatus} from '@/Services/TaskSevice';
 import SeverityEnum from '@/Enums/SeverityEnum';
+import StatusEnum from "@/Enums/StatusEnum.js";
 
 const props = defineProps({
     task: {
@@ -50,14 +52,34 @@ const onDeleteTask = async (taskId) => {
     emit('delete');    
     loading.value = false;
 }
+
+const onChangeStatus = async (taskId, status) => {
+  if (taskId) {
+    await updateTaskStatus(taskId, status);
+  }
+
+  emit('change-status');
+}
 </script>
 
 <template>
     <div class="relative">
-        <Dropdown align="right" width="48">
+        <Dropdown align="right" width="48" grouped>
+            <template #before-trigger>
+                <Button
+                    :rounded="false"
+                    :severity="SeverityEnum.SUCCESS"
+                    class="rounded-l-md pr-3 border-r border-r-green-700"
+                    @click="onChangeStatus(props.task.id, StatusEnum.IN_PROGRESS)">
+                    Take on
+                </Button>
+            </template>
+
             <template #trigger>
-                <button :class="getTheme(SeverityEnum.INFO)">
-                    Actions
+                <button :class="[
+                    getTheme(SeverityEnum.SUCCESS, { rounded: false, spaced: false }),
+                    'h-full rounded-r-md pr-3'
+                ]">
                     <Icon icon="ellipsis-vertical" class="ml-2" />
                 </button>
             </template>
@@ -68,7 +90,7 @@ const onDeleteTask = async (taskId) => {
                     @click="onTakeTask(props.task.id)"
                     class="text-blue-600">
                     <Icon icon="hand" class="mr-2" />
-                    Take
+                    Take ownership
                 </DropdownLink>
 
                 <DropdownLink @click="onEditTask(props.task)" class="text-green-600">

@@ -6,6 +6,7 @@ import Button from '@/Components/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
 import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
 import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";
+import { dateFormat } from "@/Helpers/DateHelper.js";
 
 const props = defineProps({
     show: {
@@ -72,7 +73,7 @@ const onTakeTask = () => {
 
                 <section class="border-t border-slate-200 py-2 my-2">
                     <strong>Deadline:</strong>
-                    <p class="mb-0 text-lg">{{ props.task.deadline }}</p>
+                    <p class="mb-0 text-lg">{{ dateFormat(props.task.deadline) }}</p>
                 </section>
             
                 <div class="flex items-center justify-end border-t border-slate-200 pt-4 mt-6">
