@@ -1,6 +1,6 @@
 <script setup>
-import SeverityEnum from '@/Enums/SeverityEnum';
 import { computed } from 'vue';
+import SeverityEnum from '@/Enums/SeverityEnum';
 
 const sharedClasses = 'tag border rounded text-center py-0.5 px-2 select-none';
 

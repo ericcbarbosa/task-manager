@@ -13,20 +13,23 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FloatingButton from '@/Components/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
-import CreateOrEditTask from '@/Components/Modals/CreateOrEditTask.vue';
+import CreateOrEditTask from '@/Components/Modals/CreateOrEditTaskModal.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
 import StatusEnum from '@/Enums/StatusEnum';
+import { getTheme } from '@/Theme/ButtonsTheme';
+import Icon from '@/Components/Icon.vue';
 
 const loading = ref(false);
 const isEditing = ref(false);
 const data = ref([]);
 const selectedRow = ref();
 const headers = [
+    'Owner',
     'name',
     'description',
     'status',
-    'actions',
+    '',
 ];
 
 onMounted(async () => {
@@ -135,56 +138,89 @@ const onChangeStatus = async (taskId, status) => {
 
             <section class="max-w-7xl mx-auto sm:px-6 lg:px-4 py-4 my-4">
                 <Panel>
-                    <Table v-if="data" :headers="headers" :data="data">
+                    <Table v-if="data" :headers="headers" :data="data" @row-click="onRowClick">
                         <template #row="{ item = {} }">
-                            <td id="task-owner" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                <div class="flex flex-row items-center">
+                            <td id="task-owner" class="w-24 p-4 text-sm font-medium text-gray-900">
+                                <div class="flex flex-col items-center">
                                     <Avatar
                                         :user="item?.user"
                                         :imageUrl="item?.user?.avatar"
                                     />
+                                </div>
+                            </td>
 
+                            <td id="task-owner" class="p-4 text-sm font-medium text-gray-900">
+                                <div class="flex flex-row items-center">
                                     <p class="ml-3.5">{{ item.name}}</p>
                                 </div>
                             </td>
 
-                            <td id="task-description" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            <td id="task-description" class="p-4 text-sm font-medium text-gray-900">
                                 <p class="leading-tight text-ellipsis overflow-hidden line-clamp-3">{{ item?.description }}</p>
                             </td>
 
-                            <td id="task-status" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                <Tag :severity="getStatusToSeverity(item.status)">{{ getStatusLabel(item.status) }}</Tag>
-                            </td>
-
-                            <td id="task-actions" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                <Button :severity="SeverityEnum.SUCCESS" @click="onTakeTask(item.id)">Take on</Button>
-                                
+                            <td id="task-status" class="w-32 p-4 text-sm font-medium text-gray-900">
                                 <div class="relative">
-                                    <Dropdown align="left" width="48">
+                                    <Dropdown align="right" width="48">
                                         <template #trigger>
-                                            <span class="inline-flex rounded-md">
-                                                <button class="">
-                                                    Change status
+                                            <Tag :severity="getStatusToSeverity(item.status)">
+                                                <button>
+                                                    {{ getStatusLabel(item.status) }}
                                                 </button>
-                                            </span>
+                                            </Tag>
                                         </template>
 
                                         <template #content>
-                                            <Button 
-                                                :severity="SeverityEnum.DEFAULT" 
+                                            <DropdownLink
+                                                :severity="SeverityEnum.DEFAULT"
                                                 @click="onChangeStatus(item.id, StatusEnum.PENDING)">
-                                                {{ getStatusLabel(StatusEnum.COMPLETED) }} 
-                                            </Button>
-                                            <Button 
-                                                :severity="SeverityEnum.DEFAULT" 
+                                                {{ getStatusLabel(StatusEnum.PENDING) }}
+                                            </DropdownLink>
+
+                                            <DropdownLink
+                                                :severity="SeverityEnum.DEFAULT"
                                                 @click="onChangeStatus(item.id, StatusEnum.IN_PROGRESS)">
-                                                {{ getStatusLabel(StatusEnum.IN_PROGRESS) }} 
-                                            </Button>
-                                            <Button 
-                                                :severity="SeverityEnum.DEFAULT" 
+                                                {{ getStatusLabel(StatusEnum.IN_PROGRESS) }}
+                                            </DropdownLink>
+
+                                            <DropdownLink
+                                                :severity="SeverityEnum.DEFAULT"
                                                 @click="onChangeStatus(item.id, StatusEnum.COMPLETED)">
-                                                {{ getStatusLabel(StatusEnum.COMPLETED) }} 
-                                            </Button>
+                                                {{ getStatusLabel(StatusEnum.COMPLETED) }}
+                                            </DropdownLink>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+                            </td>
+
+                            <td id="task-actions" class="w-32 p-4 text-right font-medium text-gray-900">
+                                <div class="relative">
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <button :class="getTheme(SeverityEnum.INFO)">
+                                                Actions
+                                                <Icon icon="ellipsis-vertical" class="ml-2" />
+                                            </button>
+                                        </template>
+
+                                        <template #content>
+                                            <DropdownLink
+                                                v-if="$page.props.auth.user.id === item.user.id"
+                                                @click="onTakeTask(item.id)"
+                                                class="text-blue-600">
+                                                <Icon icon="hand" class="mr-2" />
+                                                Take
+                                            </DropdownLink>
+
+                                            <DropdownLink @click="onTakeTask(item.id)" class="text-green-600">
+                                                <Icon icon="pencil" class="mr-2" />
+                                                Edit
+                                            </DropdownLink>
+
+                                            <DropdownLink @click="onTakeTask(item.id)" class="text-red-600">
+                                                <Icon icon="trash" class="mr-2" />
+                                                Delete
+                                            </DropdownLink>
                                         </template>
                                     </Dropdown>
                                 </div>

@@ -165,9 +165,17 @@ const [deadline, deadlineAttrs] = defineField('deadline');
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
-                        <Button 
+                        <Button
+                            :severity="SeverityEnum.DEFAULT"
+                            class="ml-4"
+                            :disabled="isSubmitting"
+                            @click="emit('close')">
+                            {{'Cancel'}}
+                        </Button>
+
+                        <Button
                             type="submit"
-                            :severity="SeverityEnum.SUCCESS" 
+                            :severity="SeverityEnum.SUCCESS"
                             class="ml-4"
                             :disabled="isSubmitting">
                             {{isEditing ? 'Save task' : 'Create task'}}

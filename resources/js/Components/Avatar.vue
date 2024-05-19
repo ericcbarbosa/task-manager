@@ -9,33 +9,21 @@ const props = defineProps({
     },
 });
 
-const avatarStyle = 'avatar__img inline-block h-12 min-h-12 w-12 min-w-12 rounded-full ring-2 ring-white bg-gray-200';
+const avatarStyle = 'inline-block h-6 min-h-6 w-6 min-w-6 rounded-full ring-2 ring-white bg-gray-200 grow-1 shrink-0';
 
 </script>
 
 <template>
-    <div class="avatar flex flex-col items-center justify-center w-16">
-        <img 
-            v-if="imageUrl"
-            :class="avatarStyle" 
-            :src="imageUrl" 
-            :title="user?.name"
-        />
-        <div 
-            v-else
-            :class="avatarStyle"
-            :title="user?.name"
-        ></div>
+    <div class="flex flex-row items-center justify-start w-36 space-x-2">
+        <img v-if="imageUrl" :class="avatarStyle" :src="imageUrl" :title="user?.name" />
+        <div v-else :class="avatarStyle" :title="user?.name" />
 
-        <p class="avatar__name text-xs text-center leading-tight text-ellipsis overflow-hidden line-clamp-2">
+        <p class="text-sm text-left leading-tight text-ellipsis overflow-hidden line-clamp-2">
             {{ user?.name }}
         </p>
     </div>
 </template>
 
 <style>
-.avatar {
-    min-width: 3rem;
-    max-width: 3rem;
-}
+
 </style>

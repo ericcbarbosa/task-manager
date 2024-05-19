@@ -1,5 +1,6 @@
 <script setup>
-import { computed, defineEmits } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue';
+import Icon from '@/Components/Icon.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
 import { getTheme } from '@/Theme/ButtonsTheme';
 
@@ -13,9 +14,11 @@ const props = defineProps({
     },
     icon: {
         type: String,
+        default: '',
     },
     class: {
         type: String,
+        default: '',
     },
     padded: {
         type: Boolean,
@@ -37,14 +40,14 @@ const allClasses = computed(() => {
 
     return [
         ...getTheme(props.severity, themeConfigs), 
-        props?.class || '',
+        props?.class,
     ];
 });
 </script>
 
 <template>
     <button type="button" :class="allClasses" @click.stop="emit('click')">
-        <i v-if="icon" :class="`mr-2 fas fa-${icon}`"></i>
+        <Icon :icon="icon" class="mr-2"/>
         <slot></slot>
     </button>
 </template>

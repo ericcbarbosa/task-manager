@@ -71,6 +71,14 @@ const onTakeTask = () => {
                 </section>
             
                 <div class="flex items-center justify-end border-t border-slate-200 pt-4 mt-6">
+                    <Button
+                        :severity="SeverityEnum.DEFAULT"
+                        class="ml-4"
+                        :disabled="isSubmitting"
+                        @click="emit('close')">
+                        Cancel
+                    </Button>
+
                     <Button 
                         :severity="SeverityEnum.DANGER" 
                         :disabled="false"
