@@ -42,3 +42,9 @@ export const updateTaskStatus = async (id, status) => {
     return resp.status === 201;
 };
 
+export const updateTaskPriority = async (id, priority) => {
+    const resp = await HttpService.patch(`/api/tasks/${id}/priority`, { priority });
+
+    return resp.status === 201;
+};
+

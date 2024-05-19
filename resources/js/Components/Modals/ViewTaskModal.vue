@@ -1,12 +1,11 @@
 <script setup>
-import { defineProps, defineEmits, ref, watch, computed } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import Panel from '@/Components/Panel.vue';
 import Modal from '@/Components/Modal.vue';
 import Button from '@/Components/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
-import Tag from '../Tag.vue';
-import { getPriorityToSeverity, getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
-import { getPriorityLabel, getStatusLabel } from '@/Helpers/LabelHelper';
+import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
+import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";
 
 const props = defineProps({
     show: {
@@ -22,7 +21,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close', 'delete', 'take', 'edit']);
+const emit = defineEmits(['close', 'delete', 'take', 'edit', 'change-status', 'change-priority']);
 
 const onDeleteTask = () => {
     emit('delete', props.task.id);
@@ -53,16 +52,22 @@ const onTakeTask = () => {
 
                 <section class="flex flex-row items-center border-t border-slate-200 py-2 my-2">
                     <strong class="mr-3">Status:</strong>
-                    <Tag :severity="getStatusToSeverity(props.task.status)" classes="w-32 text-lg font-bold">
-                        {{ getStatusLabel(props.task.status) }}
-                    </Tag>
+                    <TaskStatusDropdown
+                        :task="props.task"
+                        align="left"
+                        width="48"
+                        @change-status="emit('change-status')"
+                    />
                 </section>
 
                 <section class="flex flex-row items-center border-t border-slate-200 py-2 my-2">
                     <strong class="mr-3">Priority:</strong>
-                    <Tag :severity="getPriorityToSeverity(props.task.priority)" classes="w-32 text-lg font-bold">
-                        {{ getPriorityLabel(props.task.priority) }}
-                    </Tag>
+                    <TaskPriorityDropdown
+                        :task="props.task"
+                        align="left"
+                        width="48"
+                        @change-priority="emit('change-priority')"
+                    />
                 </section>
 
                 <section class="border-t border-slate-200 py-2 my-2">

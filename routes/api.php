@@ -50,5 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
         'index' => 'dashboard',
     ]);
     Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
+    Route::patch('tasks/{task}/priority', [TaskController::class, 'updatePriority']);
     Route::patch('tasks/{task}/take', [TaskController::class, 'take']);
 });

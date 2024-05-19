@@ -17,6 +17,14 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    width: {
+        type: String,
+        default: '40',
+    },
+    align: {
+        type: String,
+        default: 'right',
+    },
 });
 
 const emit = defineEmits(['change-status'])
@@ -28,13 +36,11 @@ const onChangeStatus = async (taskId, status) => {
 
     emit('change-status');
 }
-
-console.log('==> props', props);
 </script>
 
 <template>
     <div class="relative">
-        <Dropdown align="right" width="40">
+        <Dropdown :align="props.align" :width="props.width">
             <template #trigger>
                 <Tag :severity="getStatusToSeverity(props.task.status)">
                     <button class="flex flex-row justify-center items-center w-full">

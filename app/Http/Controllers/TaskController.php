@@ -85,4 +85,16 @@ class TaskController extends Controller
 
         return response()->json($result);
     }
+
+    /**
+     * Update task priority
+     */
+    public function updatePriority(Request $request, string $id)
+    {
+        $result = Task::findOrFail($id)->update([
+            'priority' => $request->get('priority'),
+        ]);
+
+        return response()->json($result);
+    }
 }

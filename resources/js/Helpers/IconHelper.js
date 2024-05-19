@@ -7,7 +7,16 @@ export const STATUS_ICONS = {
     [StatusEnum.COMPLETED]: 'check',
 };
 
-
 export const getStatusIcon = (status = StatusEnum.PENDING)  => {
     return STATUS_ICONS[status];
+}
+
+export const PRIORITY_ICONS = {
+    [PriorityEnum.LOW]: 'arrow-down',
+    [PriorityEnum.MEDIUM]: 'square-minus',
+    [PriorityEnum.HIGH]: 'triangle-exclamation',
+};
+
+export const getPriorityIcon = (priority = PriorityEnum.LOW)  => {
+    return PRIORITY_ICONS[priority];
 }

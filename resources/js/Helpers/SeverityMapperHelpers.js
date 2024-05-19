@@ -13,7 +13,7 @@ export const getStatusToSeverity = (status = StatusEnum.PENDING) => {
 };
 
 const PRIORITY_TO_SEVERITY = {
-    [PriorityEnum.LOW]: SeverityEnum.DEFAULT,
+    [PriorityEnum.LOW]: SeverityEnum.INFO,
     [PriorityEnum.MEDIUM]: SeverityEnum.WARNING,
     [PriorityEnum.HIGH]: SeverityEnum.DANGER,
 };

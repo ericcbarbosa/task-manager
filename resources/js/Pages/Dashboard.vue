@@ -2,20 +2,14 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
-import { getStatusLabel } from '@/Helpers/LabelHelper';
 import { createTask, deleteTask, getTasks, takeTask, updateTaskStatus } from '@/Services/TaskSevice';
 import Table from '@/Components/Table.vue';
 import Avatar from '@/Components/Avatar.vue';
-import Tag from '@/Components/Tag.vue';
-import { onMounted, ref } from 'vue';
-import Dropdown from '@/Components/Dropdown/Dropdown.vue';
-import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import FloatingButton from '@/Components/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
 import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
-import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
-import StatusEnum from '@/Enums/StatusEnum';
 import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
 import TaskStatusDropdown from '@/Components/Dropdown/TaskStatusDropdown.vue';
 
@@ -113,16 +107,19 @@ const onTakeTask = async (taskId) => {
     fetchTasks();
 }
 
-const onChangeStatus = async (taskId, status) => {
-    loading.value = true;
+const changedTask = computed(() => {
+  const dataTask = data.value.find((task) => task?.id === selectedRow.value?.id);
 
-    if (taskId) {
-        const tasks = await updateTaskStatus(taskId, status);
-        data.value = tasks;
-    }
+  if (dataTask?.status !== selectedRow.value?.status || dataTask?.priority !== selectedRow.value?.priority) {
+    return dataTask;
+  }
 
-    fetchTasks();
-}
+  return selectedRow.value;
+});
+
+watch(changedTask, (newTask) => {
+  selectedRow.value = newTask;
+});
 
 </script>
 
@@ -188,6 +185,8 @@ const onChangeStatus = async (taskId, status) => {
                 @delete="onDeleteTask"
                 @take="onTakeTask"
                 @edit="onShowEditModal"
+                @change-status="fetchTasks"
+                @change-priority="fetchTasks"
             />
 
             <CreateOrEditTaskModal
