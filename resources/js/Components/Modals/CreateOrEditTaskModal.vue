@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, ref, watch, computed } from 'vue';
+import {defineProps, defineEmits, ref, watch, computed, onMounted} from 'vue';
 import Panel from '@/Components/Panel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/Form/InputError.vue';
@@ -80,8 +80,8 @@ const { defineField, handleSubmit, isSubmitting, errors, setValues, resetForm } 
 
 const hasTask = computed(() => props.isEditing && props.task && props.task?.name);
 
-watch(hasTask, (newTask)=> {
-    if (newTask && props.isEditing && props.task) {
+const setFormValues = () => {
+    if (props.isEditing && props.task) {
         setValues({
             name: props.task?.name,
             description: props.task?.description,
@@ -89,6 +89,16 @@ watch(hasTask, (newTask)=> {
             priority: props.task?.priority,
             deadline: dateFormat(props.task?.deadline),
         });
+    }
+}
+
+onMounted(() => {
+    setFormValues();
+})
+
+watch(hasTask, (newTask)=> {
+    if (newTask) {
+        setFormValues();
     }
 });
 
@@ -100,7 +110,6 @@ const onSumbitSuccess = (values) => {
         : values;
 
     emit(event, newTask);
-    resetForm();
 };
 
 const onSubmit = handleSubmit(
@@ -128,7 +137,6 @@ const handleChangePriority = (taskId, newPriority) => {
 };
 
 const handleClose = () => {
-    resetForm();
     emit('close');
 }
 

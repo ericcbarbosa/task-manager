@@ -177,6 +177,11 @@ const onCompleteEditModal = async (taskId) => {
     loadingEditTask.value = false;
 }
 
+const onCloseEditModal = () => {
+    showEditOrCreateModal.value = false;
+    selectedRow.value = null;
+}
+
 watch(changedTask, (newTask) => {
   selectedRow.value = newTask;
 });
@@ -270,7 +275,7 @@ const isLoadingSomenthing = computed(() => {
                 :show="showEditOrCreateModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
-                @close="showEditOrCreateModal = false"
+                @close="onCloseEditModal"
                 @create="onCreateTask"
                 @edit="onEditTask"
             />
