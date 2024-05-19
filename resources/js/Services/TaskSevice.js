@@ -37,7 +37,7 @@ export const takeTask = async (id) => {
 };
 
 export const updateTaskStatus = async (id, status) => {
-    const resp = await HttpService.patch(`/api/tasks/${id}/status`, status);
+    const resp = await HttpService.patch(`/api/tasks/${id}/status`, { status });
 
     return resp.status === 201;
 };

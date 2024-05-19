@@ -9,11 +9,14 @@ import Avatar from '@/Components/Avatar.vue';
 import Tag from '@/Components/Tag.vue';
 import { onMounted, ref, nextTick } from 'vue';
 import Button from '@/Components/Button.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 import FloatingButton from '@/Components/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
 import CreateOrEditTask from '@/Components/Modals/CreateOrEditTask.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
+import StatusEnum from '@/Enums/StatusEnum';
 
 const loading = ref(false);
 const isEditing = ref(false);
@@ -132,7 +135,7 @@ const onChangeStatus = async (taskId, status) => {
 
             <section class="max-w-7xl mx-auto sm:px-6 lg:px-4 py-4 my-4">
                 <Panel>
-                    <Table :headers="headers" :data="data" @rowClick="onRowClick">
+                    <Table v-if="data" :headers="headers" :data="data">
                         <template #row="{ item = {} }">
                             <td id="task-owner" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                 <div class="flex flex-row items-center">
@@ -155,7 +158,36 @@ const onChangeStatus = async (taskId, status) => {
 
                             <td id="task-actions" class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                 <Button :severity="SeverityEnum.SUCCESS" @click="onTakeTask(item.id)">Take on</Button>
-                                <Button :severity="SeverityEnum.INFO" @click="onChangeStatus(item)">Change status</Button>
+                                
+                                <div class="relative">
+                                    <Dropdown align="left" width="48">
+                                        <template #trigger>
+                                            <span class="inline-flex rounded-md">
+                                                <button class="">
+                                                    Change status
+                                                </button>
+                                            </span>
+                                        </template>
+
+                                        <template #content>
+                                            <Button 
+                                                :severity="SeverityEnum.DEFAULT" 
+                                                @click="onChangeStatus(item.id, StatusEnum.PENDING)">
+                                                {{ getStatusLabel(StatusEnum.COMPLETED) }} 
+                                            </Button>
+                                            <Button 
+                                                :severity="SeverityEnum.DEFAULT" 
+                                                @click="onChangeStatus(item.id, StatusEnum.IN_PROGRESS)">
+                                                {{ getStatusLabel(StatusEnum.IN_PROGRESS) }} 
+                                            </Button>
+                                            <Button 
+                                                :severity="SeverityEnum.DEFAULT" 
+                                                @click="onChangeStatus(item.id, StatusEnum.COMPLETED)">
+                                                {{ getStatusLabel(StatusEnum.COMPLETED) }} 
+                                            </Button>
+                                        </template>
+                                    </Dropdown>
+                                </div>
                             </td>
                         </template>
                     </Table>
