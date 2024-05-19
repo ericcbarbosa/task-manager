@@ -25,26 +25,18 @@ export const createTask = async (task) => {
 };
 
 export const deleteTask = async (id) => {
-    const resp = await HttpService.delete(`/api/tasks/${id}`);
-
-    return resp.status === 201;
+    return HttpService.delete(`/api/tasks/${id}`);
 };
 
 export const takeTask = async (id) => {
-    const resp = await HttpService.patch(`/api/tasks/${id}/take`);
-
-    return resp.status === 201;
+    return HttpService.patch(`/api/tasks/${id}/take`);
 };
 
 export const updateTaskStatus = async (id, status) => {
-    const resp = await HttpService.patch(`/api/tasks/${id}/status`, { status });
-
-    return resp.status === 201;
+    return HttpService.patch(`/api/tasks/${id}/status`, { status });
 };
 
 export const updateTaskPriority = async (id, priority) => {
-    const resp = await HttpService.patch(`/api/tasks/${id}/priority`, { priority });
-
-    return resp.status === 201;
+    return HttpService.patch(`/api/tasks/${id}/priority`, { priority });
 };
 

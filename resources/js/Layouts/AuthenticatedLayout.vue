@@ -15,17 +15,15 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <teleport to="body">
-            <transition leave-active-class="duration-200">
-                <div class="absolute top-10 right-10">
-                    <Toast
-                        class="mb-3"
-                        v-for="(notification, index) in ToastService.notifications"
-                        :message="notification.message"
-                        :severity="notification.severity"
-                        @close="ToastService.dismiss(index)"
-                    />
-                </div>
-            </transition>
+            <div class="absolute top-10 right-10 z-[100]">
+                <Toast
+                    class="mb-3"
+                    v-for="(notification, index) in ToastService.notifications"
+                    :message="notification.message"
+                    :severity="notification.severity"
+                    @close="ToastService.dismiss(index)"
+                />
+            </div>
         </teleport>
 
         <div class="min-h-screen bg-gray-100">

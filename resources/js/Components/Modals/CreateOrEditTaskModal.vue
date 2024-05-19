@@ -41,13 +41,29 @@ const initialValues = {
 
 const validationSchema = {
     name: yup.string().required().min(4).max(200),
-    description: yup.string().required(),
+    description: yup.string().required().min(4),
     deadline: yup.date().required(),
     status(value) {
-        return value && Object.keys(StatusEnum).includes(value);
+        if (!value) {
+            return 'this is a required field';
+        }
+
+        if (!Object.keys(StatusEnum).includes(value)) {
+            return 'Invalid status'
+        }
+
+        return true;
     },
     priority(value) {
-        return value && Object.keys(PiorityEnum).includes(value);
+        if (!value) {
+            return 'this is a required field';
+        }
+
+        if (!Object.keys(PiorityEnum).includes(value)) {
+            return 'Invalid priority'
+        }
+
+        return true;
     },
 }
 
@@ -123,7 +139,7 @@ const [deadline, deadlineAttrs] = defineField('deadline');
                             v-bind="descriptionAttrs"
                         />
 
-                        <InputError class="mt-2" :message="errors.email" />
+                        <InputError class="mt-2" :message="errors.description" />
                     </div>
 
                     <div class="mt-4">

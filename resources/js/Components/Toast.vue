@@ -27,17 +27,26 @@ const emit = defineEmits(['close']);
 </script>
 
 <template>
-    <div :class="[getTheme(props.severity), 'relative']">
-        <slot v-if="!props.message" />
-        <template v-else>{{ props.message }}</template>
+    <transition
+        enter-active-class="ease-out duration-300"
+        enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        enter-to-class="opacity-100 translate-y-0 sm:scale-100"
+        leave-active-class="ease-in duration-200"
+        leave-from-class="opacity-100 translate-y-0 sm:scale-100"
+        leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    >
+        <div :class="[getTheme(props.severity), 'relative']">
+            <slot v-if="!props.message" />
+            <template v-else>{{ props.message }}</template>
 
-        <Button
-            v-if="closable" class="absolute w-8 h-8 text-center right-2 top-3 rounded-full"
-            @click="emit('close')"
-            unstyled>
-            <Icon icon="times" />
-        </Button>
-    </div>
+            <Button
+                v-if="closable" class="absolute w-8 h-8 text-center right-2 top-3 rounded-full"
+                @click="emit('close')"
+                unstyled>
+                <Icon icon="times" />
+            </Button>
+        </div>
+    </transition>
 </template>
 
 <style scoped>

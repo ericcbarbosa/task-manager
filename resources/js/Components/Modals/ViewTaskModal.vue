@@ -99,7 +99,7 @@ const onTakeTask = () => {
                         icon="hand"
                         class="ml-4"
                         @click="onTakeTask">
-                        Take
+                        Take ownership
                     </Button>
 
                     <Button 

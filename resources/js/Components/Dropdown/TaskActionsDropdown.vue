@@ -29,11 +29,13 @@ const onTakeTask = async (taskId) => {
     loading.value = true;
     
     if (taskId) {
-        const result = await takeTask(taskId);
-        props.task.value = result;
+        const success = await takeTask(taskId);
+
+        if (success) {
+            emit('take');
+        }
     }
-    
-    emit('take');    
+
     loading.value = false;
 }
 
@@ -45,20 +47,24 @@ const onDeleteTask = async (taskId) => {
     loading.value = true;
 
     if (taskId) {
-        const result = await deleteTask(taskId);
-        props.task.value = result;
+        const success = await deleteTask(taskId);
+
+        if (success) {
+            emit('delete');
+        }
     }
 
-    emit('delete');    
     loading.value = false;
 }
 
 const onChangeStatus = async (taskId, status) => {
-  if (taskId) {
-    await updateTaskStatus(taskId, status);
-  }
+    if (taskId) {
+        const success = await updateTaskStatus(taskId, status);
 
-  emit('change-status');
+        if (success) {
+            emit('change-status', StatusEnum.IN_PROGRESS);
+        }
+    }
 }
 </script>
 

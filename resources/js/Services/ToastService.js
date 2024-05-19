@@ -3,12 +3,18 @@ import SeverityEnum from "@/Enums/SeverityEnum.js";
 
 export const ToastService = reactive({
     notifications: [],
+    timers: [],
+    delay: 2000,
     push(message, severity, context) {
-        this.notifications.push({
+        const index = this.notifications.push({
             context,
             message,
             severity,
         });
+
+        this.timers.push(setTimeout(() => {
+            this.dismiss(index);
+        }, this.delay));
     },
     dismiss(index) {
         this.notifications = this.notifications

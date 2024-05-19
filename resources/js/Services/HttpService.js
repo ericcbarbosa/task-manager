@@ -8,6 +8,10 @@ const HttpService = axios.create({
 
 const getErrorMessage = (error) => {
     if (error?.response?.data?.message) {
+        if (Array.isArray(error?.response?.data?.message)) {
+            return error?.response?.data?.message.join(', ')
+        }
+
         return error?.response?.data?.message;
     }
 

@@ -12,6 +12,8 @@ import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
 import TaskStatusDropdown from '@/Components/Dropdown/TaskStatusDropdown.vue';
+import {ToastService} from "@/Services/ToastService.js";
+import {getStatusLabel} from "@/Helpers/LabelHelper.js";
 
 const loading = ref(false);
 const isEditing = ref(false);
@@ -35,6 +37,21 @@ const fetchTasks = async () => {
     const tasks = await getTasks();
     data.value = tasks;
     loading.value = false;
+}
+
+const onTakeOwnershipSuccess = async () => {
+    ToastService.success('Good! This task is your\'s');
+    await fetchTasks();
+}
+
+const onDeleteTaskSuccess = async () => {
+    ToastService.success('Good! Task deleted');
+    await fetchTasks();
+}
+
+const onChangeStatusSuccess = async(status) => {
+    ToastService.success(`Good! Task status updated to "${getStatusLabel(status)}"`);
+    await fetchTasks();
 }
 
 const showViewModal = ref(false);
@@ -67,43 +84,48 @@ const onCreateTask = async (task) => {
     loading.value = true;
 
     if (task) {
-        const tasks = await createTask(task);
-        data.value = tasks;
-    }
+        await createTask(task);
+        await fetchTasks();
 
-    fetchTasks();
+        showEditOrCreateModal.value = false;
+    }
 }
 
 const onDeleteTask = async (taskId) => {
     loading.value = true;
 
     if (taskId) {
-        const tasks = await deleteTask(taskId);
-        data.value = tasks;
-    }
+        const success = await deleteTask(taskId);
 
-    fetchTasks();
+        if (success) {
+            await fetchTasks();
+
+            showEditOrCreateModal.value = false;
+        }
+    }
 }
 
 const onEditTask = async (task) => {
     loading.value = true;
 
     if (task) {
-        await updateTask(task);
-    }
+        const success = await updateTask(task);
 
-    fetchTasks();
+        if (success) {
+            await fetchTasks();
+
+            showEditOrCreateModal.value = false;
+        }
+    }
 }
 
-const onTakeTask = async (taskId) => {
+const onTakeOwnershipTask = async (taskId) => {
     loading.value = true;
 
     if (taskId) {
-        const tasks = await takeTask(taskId);
-        data.value = tasks;
+        await takeTask(taskId);
+        await fetchTasks();
     }
-
-    fetchTasks();
 }
 
 const changedTask = computed(() => {
@@ -124,12 +146,13 @@ watch(changedTask, (newTask) => {
 
 /*
 * TODO:
-*   - Alterar Take para Take on e alterar status para in progress
 *   - Adicionar dropdowns de Status e Priority no Edit
 *   - Exibir avatar no View modal
-*   - Error handling + Toast
 *   - Adicionar Read Me
 *   - Metodo para adicionar imagem do avatar?
+*   - Animação do Toast
+*   - Request duplicado
+*   - Loadings
 *
 * */
 
@@ -179,9 +202,9 @@ watch(changedTask, (newTask) => {
                                     :current-user-id="$page.props.auth.user.id"
                                     :task="item"
                                     @edit="onShowEditModal"
-                                    @take="fetchTasks"
-                                    @delete="fetchTasks"
-                                    @change-status="fetchTasks"
+                                    @take="onTakeOwnershipSuccess"
+                                    @delete="onDeleteTaskSuccess"
+                                    @change-status="onChangeStatusSuccess"
                                 />
                             </td>
                         </template>
@@ -196,7 +219,7 @@ watch(changedTask, (newTask) => {
                 :is-editing="isEditing"
                 @close="showViewModal = false"
                 @delete="onDeleteTask"
-                @take="onTakeTask"
+                @take="onTakeOwnershipTask"
                 @edit="onShowEditModal"
                 @change-status="fetchTasks"
                 @change-priority="fetchTasks"
