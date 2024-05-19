@@ -17,6 +17,7 @@ import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
 import StatusEnum from '@/Enums/StatusEnum';
 import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
+import TaskStatusDropdown from '@/Components/Dropdown/TaskStatusDropdown.vue';
 
 const loading = ref(false);
 const isEditing = ref(false);
@@ -157,38 +158,11 @@ const onChangeStatus = async (taskId, status) => {
                                 <p class="leading-tight text-ellipsis overflow-hidden line-clamp-3">{{ item?.description }}</p>
                             </td>
 
-                            <td id="task-status" class="w-32 p-4 text-sm font-medium text-gray-900">
-                                <div class="relative">
-                                    <Dropdown align="right" width="48">
-                                        <template #trigger>
-                                            <Tag :severity="getStatusToSeverity(item.status)">
-                                                <button>
-                                                    {{ getStatusLabel(item.status) }}
-                                                </button>
-                                            </Tag>
-                                        </template>
-
-                                        <template #content>
-                                            <DropdownLink
-                                                :severity="SeverityEnum.DEFAULT"
-                                                @click="onChangeStatus(item.id, StatusEnum.PENDING)">
-                                                {{ getStatusLabel(StatusEnum.PENDING) }}
-                                            </DropdownLink>
-
-                                            <DropdownLink
-                                                :severity="SeverityEnum.DEFAULT"
-                                                @click="onChangeStatus(item.id, StatusEnum.IN_PROGRESS)">
-                                                {{ getStatusLabel(StatusEnum.IN_PROGRESS) }}
-                                            </DropdownLink>
-
-                                            <DropdownLink
-                                                :severity="SeverityEnum.DEFAULT"
-                                                @click="onChangeStatus(item.id, StatusEnum.COMPLETED)">
-                                                {{ getStatusLabel(StatusEnum.COMPLETED) }}
-                                            </DropdownLink>
-                                        </template>
-                                    </Dropdown>
-                                </div>
+                            <td id="task-status" class="w-40 p-4 text-sm font-medium text-gray-900">
+                                <TaskStatusDropdown
+                                    :task="item"
+                                    @change-status="fetchTasks"
+                                />
                             </td>
 
                             <td id="task-actions" class="w-32 p-4 text-right font-medium text-gray-900">
