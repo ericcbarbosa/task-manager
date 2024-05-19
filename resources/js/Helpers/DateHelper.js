@@ -1,7 +1,7 @@
 export const dateFormat = (dateString) => {
     const objectDate = new Date(dateString);
-    let day = objectDate.getDate();
-    let month = objectDate.getMonth();
+    let day = objectDate.getDate() + 1;
+    let month = objectDate.getMonth() + 1;
     let year = objectDate.getFullYear();
 
     if (day.toString().length < 2) day = '0' + day;

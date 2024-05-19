@@ -130,7 +130,6 @@ const onEditTask = async (task) => {
             await fetchTasks();
 
             showEditOrCreateModal.value = false;
-            selectedRow.value = null;
         }
     }
 
@@ -154,7 +153,11 @@ const changedTask = computed(() => {
     if (data.value) {
         const dataTask = data.value?.find((task) => task?.id === selectedRow.value?.id);
 
-        if (dataTask?.status !== selectedRow.value?.status || dataTask?.priority !== selectedRow.value?.priority) {
+        if (
+            dataTask?.status !== selectedRow.value?.status
+            || dataTask?.priority !== selectedRow.value?.priority
+            || dataTask?.id !== selectedRow.value?.id
+        ) {
             return dataTask;
         }
 
@@ -167,9 +170,10 @@ const onCompleteEditModal = async (taskId) => {
 
     if (taskId) {
         await updateTaskStatus(taskId, StatusEnum.COMPLETED);
-        showViewModal.value = false;
+        await fetchTasks();
     }
 
+    showViewModal.value = false;
     loadingEditTask.value = false;
 }
 

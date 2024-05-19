@@ -21,7 +21,7 @@ const props = defineProps({
         }
     },
     taskId: {
-        type: Number,
+        type: [Number, null],
         required: true,
     },
     width: {
@@ -38,7 +38,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['change-status', 'start-fetch', 'end-fetch'])
+const emit = defineEmits(['change-status', 'start-fetch', 'end-fetch', 'change-priority'])
 
 const onChangePriority = async (taskId, status) => {
     emit('start-fetch');

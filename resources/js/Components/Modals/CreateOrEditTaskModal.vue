@@ -73,12 +73,12 @@ const validationSchema = {
     },
 }
 
-const { defineField, handleSubmit, isSubmitting, errors, setValues, values } = useForm({
+const { defineField, handleSubmit, isSubmitting, errors, setValues, resetForm } = useForm({
     validationSchema,
     initialValues: initialValues,
 });
 
-const hasTask = computed(() => props.task && props.task?.name);
+const hasTask = computed(() => props.isEditing && props.task && props.task?.name);
 
 watch(hasTask, (newTask)=> {
     if (newTask && props.isEditing && props.task) {
@@ -100,6 +100,7 @@ const onSumbitSuccess = (values) => {
         : values;
 
     emit(event, newTask);
+    resetForm();
 };
 
 const onSubmit = handleSubmit(
@@ -126,6 +127,11 @@ const handleChangePriority = (taskId, newPriority) => {
     });
 };
 
+const handleClose = () => {
+    resetForm();
+    emit('close');
+}
+
 </script>
 <template>
     <Modal
@@ -133,9 +139,9 @@ const handleChangePriority = (taskId, newPriority) => {
         :closeable="true"
         :show="props?.show"
         show-footer
-        @close="emit('close')">
+        @close="handleClose">
         <div :class="['min-h-3.5', loading ? 'opacity-60 pointer-events-none select-none' : '']">
-            <form v-show="isEditing && task || !isEditing">
+            <form v-if="isEditing && task || !isEditing && !task">
                 <div class="mt-4">
                     <InputLabel for="name" value="Name" />
 

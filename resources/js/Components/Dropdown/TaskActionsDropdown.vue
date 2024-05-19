@@ -25,7 +25,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['take', 'edit', 'delete', 'start-fetch', 'end-fetch']);
+const emit = defineEmits(['take', 'edit', 'delete', 'start-fetch', 'end-fetch', 'change-status']);
 
 const loading = ref(false);
 
