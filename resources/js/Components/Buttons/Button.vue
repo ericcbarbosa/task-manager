@@ -1,8 +1,8 @@
 <script setup>
 import { defineProps, defineEmits, computed } from 'vue';
 import Icon from '@/Components/Icon.vue';
-import SeverityEnum from '@/Enums/SeverityEnum';
-import { getTheme } from '@/Theme/ButtonsTheme';
+import SeverityEnum from '@/Enums/SeverityEnum.js';
+import { getTheme } from '@/Theme/ButtonsTheme.js';
 
 const props = defineProps({
     severity: {
@@ -28,6 +28,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    unstyled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits('click');
@@ -37,6 +41,10 @@ const allClasses = computed(() => {
         spaced: props.padded,
         rounded: props.rounded,
     };
+
+    if (props.unstyled) {
+        return [props?.class]
+    }
 
     return [
         ...getTheme(props.severity, themeConfigs), 

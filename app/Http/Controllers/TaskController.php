@@ -42,6 +42,7 @@ class TaskController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'id' => 'required',
             'name' => 'required',
             'description' => 'required',
             'status' => 'required',
@@ -49,7 +50,7 @@ class TaskController extends Controller
             'priority' => 'required',
         ]);
 
-        $result = Task::findOrFail($id)::update($request->all());
+        $result = Task::findOrFail($id)->update($request->all());
         return response()->json($result);
     }
 

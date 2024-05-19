@@ -12,8 +12,8 @@ export const getTask = async (id) => {
     return resp.data;
 };
 
-export const updateTask = async (id, task) => {
-    const resp = await HttpService.post(`/api/tasks/${id}`, task);
+export const updateTask = async (task) => {
+    const resp = await HttpService.put(`/api/tasks/${task.id}`, task);
 
     return resp.data;
 };

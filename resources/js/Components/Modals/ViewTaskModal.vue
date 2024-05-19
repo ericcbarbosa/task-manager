@@ -2,7 +2,7 @@
 import { defineProps, defineEmits } from 'vue';
 import Panel from '@/Components/Panel.vue';
 import Modal from '@/Components/Modal.vue';
-import Button from '@/Components/Button.vue';
+import Button from '@/Components/Buttons/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
 import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
 import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";

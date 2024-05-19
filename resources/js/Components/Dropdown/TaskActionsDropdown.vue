@@ -3,7 +3,7 @@ import { defineProps, defineEmits, ref } from 'vue';
 import Dropdown from '@/Components/Dropdown/Dropdown.vue';
 import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
 import Icon from '@/Components/Icon.vue';
-import Button from '@/Components/Button.vue';
+import Button from '@/Components/Buttons/Button.vue';
 
 import { getTheme } from '@/Theme/ButtonsTheme';
 import {deleteTask, takeTask, updateTaskStatus} from '@/Services/TaskSevice';

@@ -6,12 +6,28 @@ import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import Toast from "@/Components/Toast.vue";
+import { ToastService } from "@/Services/ToastService.js";
 
 const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
     <div>
+        <teleport to="body">
+            <transition leave-active-class="duration-200">
+                <div class="absolute top-10 right-10">
+                    <Toast
+                        class="mb-3"
+                        v-for="(notification, index) in ToastService.notifications"
+                        :message="notification.message"
+                        :severity="notification.severity"
+                        @close="ToastService.dismiss(index)"
+                    />
+                </div>
+            </transition>
+        </teleport>
+
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->

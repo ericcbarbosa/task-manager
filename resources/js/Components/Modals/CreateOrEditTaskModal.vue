@@ -6,9 +6,8 @@ import InputError from '@/Components/Form/InputError.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import TextArea from '@/Components/Form/TextArea.vue';
-import Button from '@/Components/Button.vue';
+import Button from '@/Components/Buttons/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
-import { createTask } from '@/Services/TaskSevice.js';
 
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
@@ -74,7 +73,11 @@ watch(hasTask, (newTask)=> {
 // On Submit
 const onSumbitSuccess = (values) => {
     const event = props.isEditing ? 'edit' : 'create'
-    emit(event, values)
+    const newTask = props.isEditing
+        ? ({ ...props.task, ...values, })
+        : values;
+
+    emit(event, newTask);
 };
 
 const onSubmit = handleSubmit(

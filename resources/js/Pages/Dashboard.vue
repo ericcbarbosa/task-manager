@@ -2,11 +2,11 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
-import { createTask, deleteTask, getTasks, takeTask, updateTaskStatus } from '@/Services/TaskSevice';
+import {createTask, deleteTask, getTasks, takeTask, updateTask} from '@/Services/TaskSevice';
 import Table from '@/Components/Table.vue';
 import Avatar from '@/Components/Avatar.vue';
 import {computed, onMounted, ref, watch} from 'vue';
-import FloatingButton from '@/Components/FloatingButton.vue';
+import FloatingButton from '@/Components/Buttons/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
 import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
@@ -89,8 +89,7 @@ const onEditTask = async (task) => {
     loading.value = true;
 
     if (task) {
-        const tasks = await updateTask(task);
-        data.value = tasks;
+        await updateTask(task);
     }
 
     fetchTasks();
@@ -108,13 +107,15 @@ const onTakeTask = async (taskId) => {
 }
 
 const changedTask = computed(() => {
-  const dataTask = data.value.find((task) => task?.id === selectedRow.value?.id);
+    if (data.value) {
+        const dataTask = data.value?.find((task) => task?.id === selectedRow.value?.id);
 
-  if (dataTask?.status !== selectedRow.value?.status || dataTask?.priority !== selectedRow.value?.priority) {
-    return dataTask;
-  }
+        if (dataTask?.status !== selectedRow.value?.status || dataTask?.priority !== selectedRow.value?.priority) {
+            return dataTask;
+        }
 
-  return selectedRow.value;
+        return selectedRow.value;
+    }
 });
 
 watch(changedTask, (newTask) => {

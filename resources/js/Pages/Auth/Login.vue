@@ -4,7 +4,7 @@ import Checkbox from '@/Components/Form/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import { saveToken, saveUser } from '@/Services/AuthService';
 import HttpService from '@/Services/HttpService';

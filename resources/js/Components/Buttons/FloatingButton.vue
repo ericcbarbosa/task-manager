@@ -1,8 +1,8 @@
 <script setup>
 import { defineProps, defineEmits, ref } from 'vue';
-import Button from '@/Components/Button.vue';
+import Button from '@/Components/Buttons/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum.js';
-import Icon from './Icon.vue';
+import Icon from '../Icon.vue';
 
 const props = defineProps({
     severity: {
