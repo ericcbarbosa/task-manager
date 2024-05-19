@@ -14,7 +14,6 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::with('user')->get();
-        sleep(2);
         return response()->json($tasks);
     }
 
@@ -34,8 +33,6 @@ class TaskController extends Controller
         $request->merge(['user_id'=> auth()->id()]);
         $result = Task::create($request->all());
 
-        sleep(2);
-
         return response()->json($result);
     }
 
@@ -53,8 +50,6 @@ class TaskController extends Controller
             'priority' => 'required',
         ]);
 
-        sleep(2);
-
         $result = Task::findOrFail($id)->update($request->all());
         return response()->json($result);
     }
@@ -65,8 +60,6 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         $result = Task::findOrFail($id)->delete();
-
-        sleep(2);
         return response()->json($result);
     }
 
@@ -78,8 +71,6 @@ class TaskController extends Controller
         $result = Task::findOrFail($id)->update([
             'user_id' => auth()->id(),
         ]);
-
-        sleep(2);
 
         return response()->json($result);
     }
@@ -93,8 +84,6 @@ class TaskController extends Controller
             'status' => $request->get('status'),
         ]);
 
-        sleep(2);
-
         return response()->json($result);
     }
 
@@ -106,8 +95,6 @@ class TaskController extends Controller
         $result = Task::findOrFail($id)->update([
             'priority' => $request->get('priority'),
         ]);
-
-        sleep(2);
 
         return response()->json($result);
     }

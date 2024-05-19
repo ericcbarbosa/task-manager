@@ -39,7 +39,6 @@ const submit = async () => {
         }
     }
 
-    // TODO: REMOVE
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
         onSuccess: (res) => {
