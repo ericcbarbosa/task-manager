@@ -173,10 +173,7 @@ watch(changedTask, (newTask) => {
                         <template #row="{ item = {} }">
                             <td id="task-owner" class="w-24 p-4 text-sm font-medium text-gray-900">
                                 <div class="flex flex-col items-center">
-                                    <Avatar
-                                        :user="item?.user"
-                                        :imageUrl="item?.user?.avatar"
-                                    />
+                                    <Avatar :user="item?.user" />
                                 </div>
                             </td>
 

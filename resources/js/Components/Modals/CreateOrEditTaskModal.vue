@@ -110,99 +110,105 @@ const [deadline, deadlineAttrs] = defineField('deadline');
 
 </script>
 <template>
-    <Modal :closeable="true" :show="props?.show" @close="emit('close')">
+    <Modal
+        :title="isEditing ? `Edit task` : 'Create task'"
+        :closeable="true"
+        :show="props?.show"
+        show-footer
+        @close="emit('close')">
         <div class="min-h-3.5">
-            <Panel>
-                <form v-show="isEditing && task || !isEditing" @submit.prevent="onSubmit">
-                    <div class="mt-4">
-                        <InputLabel for="name" value="Name" />
+            <form v-show="isEditing && task || !isEditing">
+                <div class="mt-4">
+                    <InputLabel for="name" value="Name" />
 
-                        <TextInput
-                            id="name"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="name"
-                            v-bind="nameAttrs"
-                            autofocus
-                        />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="name"
+                        v-bind="nameAttrs"
+                        autofocus
+                    />
 
-                        <InputError class="mt-2" :message="errors?.name" />
-                    </div>
+                    <InputError class="mt-2" :message="errors?.name" />
+                </div>
 
-                    <div class="mt-4">
-                        <InputLabel for="description" value="Description" />
+                <div class="mt-4">
+                    <InputLabel for="description" value="Description" />
 
-                        <TextArea
-                            id="description"
-                            class="mt-1 block w-full"
-                            v-model="description"
-                            v-bind="descriptionAttrs"
-                        />
+                    <TextArea
+                        id="description"
+                        class="mt-1 block w-full"
+                        v-model="description"
+                        v-bind="descriptionAttrs"
+                    />
 
-                        <InputError class="mt-2" :message="errors.description" />
-                    </div>
+                    <InputError class="mt-2" :message="errors.description" />
+                </div>
 
-                    <div class="mt-4">
-                        <InputLabel for="status" value="Status" />
+                <div class="mt-4">
+                    <InputLabel for="status" value="Status" />
 
-                        <TextInput
-                            id="status"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="status"
-                            v-bind="statusAttrs"
-                        />
+                    <TextInput
+                        id="status"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="status"
+                        v-bind="statusAttrs"
+                    />
 
-                        <InputError class="mt-2" :message="errors.status" />
-                    </div>
+                    <InputError class="mt-2" :message="errors.status" />
+                </div>
 
-                    <div class="mt-4">
-                        <InputLabel for="priority" value="Priority" />
+                <div class="mt-4">
+                    <InputLabel for="priority" value="Priority" />
 
-                        <TextInput
-                            id="priority"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="priority"
-                            v-bind="priorityAttrs"
-                        />
+                    <TextInput
+                        id="priority"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="priority"
+                        v-bind="priorityAttrs"
+                    />
 
-                        <InputError class="mt-2" :message="errors.priority" />
-                    </div>
+                    <InputError class="mt-2" :message="errors.priority" />
+                </div>
 
-                    <div class="mt-4">
-                        <InputLabel for="deadline" value="deadline" />
+                <div class="mt-4">
+                    <InputLabel for="deadline" value="deadline" />
 
-                        <TextInput
-                            id="deadline"
-                            type="date"
-                            class="mt-1 block w-full"
-                            v-model="deadline"
-                            v-bind="deadlineAttrs"
-                        />
+                    <TextInput
+                        id="deadline"
+                        type="date"
+                        class="mt-1 block w-full"
+                        v-model="deadline"
+                        v-bind="deadlineAttrs"
+                    />
 
-                        <InputError class="mt-2" :message="errors.priority" />
-                    </div>
-
-                    <div class="flex items-center justify-end mt-4">
-                        <Button
-                            :severity="SeverityEnum.DEFAULT"
-                            class="ml-4"
-                            :disabled="isSubmitting"
-                            @click="emit('close')">
-                            {{'Cancel'}}
-                        </Button>
-
-                        <Button
-                            type="submit"
-                            :severity="SeverityEnum.SUCCESS"
-                            class="ml-4"
-                            :disabled="isSubmitting">
-                            {{isEditing ? 'Save task' : 'Create task'}}
-                        </Button>
-                    </div>
-                </form>
-            </Panel>
+                    <InputError class="mt-2" :message="errors.priority" />
+                </div>
+            </form>
         </div>
+
+        <template #footer>
+            <div class="flex items-center justify-end">
+                <Button
+                    :severity="SeverityEnum.DEFAULT"
+                    class="ml-4"
+                    :disabled="isSubmitting"
+                    @click="emit('close')">
+                    {{'Cancel'}}
+                </Button>
+
+                <Button
+                    type="submit"
+                    :severity="SeverityEnum.SUCCESS"
+                    class="ml-4"
+                    :disabled="isSubmitting"
+                    @click="onSubmit">
+                    {{isEditing ? 'Save task' : 'Create task'}}
+                </Button>
+            </div>
+        </template>
     </Modal>
 </template>

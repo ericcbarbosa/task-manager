@@ -10,9 +10,17 @@ const props = defineProps({
         type: String,
         default: '2xl',
     },
+    title: {
+        type: String,
+        default: '',
+    },
     closeable: {
         type: Boolean,
         default: true,
+    },
+    showFooter: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -89,7 +97,21 @@ const maxWidthClass = computed(() => {
                         class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
                         :class="maxWidthClass"
                     >
-                        <slot v-if="show" />
+                        <div v-if="show">
+                            <slot name="header">
+                                <div v-if="props.title" class="w-full bg-gray-200 border-b border-gray-300 p-4">
+                                    <h3 class="text-2xl font-bold">{{props.title}}</h3>
+                                </div>
+                            </slot>
+
+                            <div class="p-6 bg-white">
+                                <slot />
+                            </div>
+
+                            <div v-if="props.showFooter" class="w-full bg-gray-200 border-t border-gray-300 p-4">
+                                <slot name="footer" />
+                            </div>
+                        </div>
                     </div>
                 </transition>
             </div>
