@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, defineEmits, ref} from 'vue';
+import {defineProps, defineEmits, ref, computed} from 'vue';
 import Modal from '@/Components/Modal.vue';
 import Button from '@/Components/Buttons/Button.vue';
 import SeverityEnum from '@/Enums/SeverityEnum';
@@ -9,6 +9,7 @@ import { dateFormat } from "@/Helpers/DateHelper.js";
 import Avatar from "@/Components/Avatar.vue";
 
 const localLoading = ref(false);
+const formattedDeadline = computed(() => dateFormat(props.task.deadline));
 
 const props = defineProps({
     show: {
@@ -88,7 +89,10 @@ const onTakeTask = () => {
 
             <strong>Deadline:</strong>
             <section class="border rounded-lg bg-slate-100 border-slate-200 p-2 mt-1 mb-4 flex flex-row items-center justify-between gap-4">
-                <p class="mb-0 text-lg">{{ dateFormat(props.task.deadline) }}</p>
+                <p class="mb-0 text-lg">
+                    {{ formattedDeadline }}
+                </p>
+                <smal class="text-gray-700 select-none">mm/dd/yyyy</smal>
             </section>
         </div>
 

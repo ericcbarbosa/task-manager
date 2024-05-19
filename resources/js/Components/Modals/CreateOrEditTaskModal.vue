@@ -15,6 +15,7 @@ import StatusEnum from '@/Enums/StatusEnum';
 import PiorityEnum from '@/Enums/PriorityEnum';
 import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
 import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";
+import {dateFormat} from "@/Helpers/DateHelper.js";
 
 const props = defineProps({
     show: {
@@ -86,7 +87,7 @@ watch(hasTask, (newTask)=> {
             description: props.task?.description,
             status: props.task?.status,
             priority: props.task?.priority,
-            deadline: props.task?.deadline,
+            deadline: dateFormat(props.task?.deadline),
         });
     }
 });
@@ -199,9 +200,10 @@ const handleChangePriority = (taskId, newPriority) => {
                     <InputLabel for="deadline" value="deadline" />
 
                     <TextInput
+                        type="text"
                         id="deadline"
-                        type="date"
                         class="mt-1 block w-full"
+                        pattern="\d{4}-\d{2}-\d{2}"
                         v-model="deadline"
                         v-bind="deadlineAttrs"
                     />
