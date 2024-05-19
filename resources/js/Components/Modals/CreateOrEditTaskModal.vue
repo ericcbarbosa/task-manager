@@ -13,6 +13,8 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import StatusEnum from '@/Enums/StatusEnum';
 import PiorityEnum from '@/Enums/PriorityEnum';
+import TaskStatusDropdown from "@/Components/Dropdown/TaskStatusDropdown.vue";
+import TaskPriorityDropdown from "@/Components/Dropdown/TaskPriorityDropdown.vue";
 
 const props = defineProps({
     show: {
@@ -67,7 +69,7 @@ const validationSchema = {
     },
 }
 
-const { defineField, handleSubmit, isSubmitting, errors, setValues } = useForm({
+const { defineField, handleSubmit, isSubmitting, errors, setValues, values } = useForm({
     validationSchema,
     initialValues: initialValues,
 });
@@ -108,6 +110,18 @@ const [status, statusAttrs] = defineField('status');
 const [priority, priorityAttrs] = defineField('priority');
 const [deadline, deadlineAttrs] = defineField('deadline');
 
+const handleChangeStatus = (taskId, newStatus) => {
+    setValues({
+        status: newStatus,
+    });
+};
+
+const handleChangePriority = (taskId, newPriority) => {
+    setValues({
+        priority: newPriority,
+    });
+};
+
 </script>
 <template>
     <Modal
@@ -146,33 +160,37 @@ const [deadline, deadlineAttrs] = defineField('deadline');
                     <InputError class="mt-2" :message="errors.description" />
                 </div>
 
-                <div class="mt-4">
+                <section class="flex flex-row items-center justify-between gap-4">
+                <div class="mt-4 w-48">
                     <InputLabel for="status" value="Status" />
 
-                    <TextInput
-                        id="status"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="status"
-                        v-bind="statusAttrs"
+                    <TaskStatusDropdown
+                        :taskId="props.task.id"
+                        :status="status"
+                        align="left"
+                        width="48"
+                        :make-request="false"
+                        @change-status="handleChangeStatus"
                     />
 
                     <InputError class="mt-2" :message="errors.status" />
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-4 w-48 flex flex-col text-right">
                     <InputLabel for="priority" value="Priority" />
 
-                    <TextInput
-                        id="priority"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="priority"
-                        v-bind="priorityAttrs"
+                    <TaskPriorityDropdown
+                        :task-id="props.task.id"
+                        :priority="priority"
+                        align="right"
+                        width="48"
+                        :make-request="false"
+                        @change-priority="handleChangePriority"
                     />
 
                     <InputError class="mt-2" :message="errors.priority" />
                 </div>
+                </section>
 
                 <div class="mt-4">
                     <InputLabel for="deadline" value="deadline" />

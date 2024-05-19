@@ -13,8 +13,15 @@ import {getPriorityIcon} from '@/Helpers/IconHelper';
 import PriorityEnum from '@/Enums/PriorityEnum.js';
 
 const props = defineProps({
-    task: {
-        type: Object,
+    priority: {
+        type: String,
+        default: PriorityEnum.LOW,
+        validator(value) {
+            return Object.keys(PriorityEnum).includes(value);
+        }
+    },
+    taskId: {
+        type: Number,
         required: true,
     },
     width: {
@@ -25,16 +32,20 @@ const props = defineProps({
         type: String,
         default: 'right',
     },
+    makeRequest: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['change-status'])
 
 const onChangePriority = async (taskId, status) => {
-    if (taskId) {
+    if (taskId && props.makeRequest) {
         await updateTaskPriority(taskId, status);
     }
 
-    emit('change-priority');
+    emit('change-priority', taskId, status);
 }
 </script>
 
@@ -42,9 +53,9 @@ const onChangePriority = async (taskId, status) => {
     <div class="relative">
         <Dropdown :align="props.align" :width="props.width">
             <template #trigger>
-                <Tag :severity="getPriorityToSeverity(props.task.priority)">
-                  <Icon :icon="getPriorityIcon(props.task.priority)" class="mr-2" />
-                    {{ getPriorityLabel(props.task.priority) }}
+                <Tag :severity="getPriorityToSeverity(props.priority)">
+                  <Icon :icon="getPriorityIcon(props.priority)" class="mr-2" />
+                    {{ getPriorityLabel(props.priority) }}
                 </Tag>
             </template>
 
@@ -52,7 +63,7 @@ const onChangePriority = async (taskId, status) => {
                 <DropdownLink
                     class="text-blue-600"
                     :severity="getPriorityToSeverity(PriorityEnum.LOW)"
-                    @click="onChangePriority(props.task.id, PriorityEnum.LOW)">
+                    @click="onChangePriority(props.taskId, PriorityEnum.LOW)">
                     <Icon :icon="getPriorityIcon(PriorityEnum.LOW)" class="mr-1" />
                     {{ getPriorityLabel(PriorityEnum.LOW) }}
                 </DropdownLink>
@@ -60,7 +71,7 @@ const onChangePriority = async (taskId, status) => {
                 <DropdownLink
                     class="text-yellow-600"
                     :severity="getPriorityToSeverity(PriorityEnum.MEDIUM)"
-                    @click="onChangePriority(props.task.id, PriorityEnum.MEDIUM)">
+                    @click="onChangePriority(props.taskId, PriorityEnum.MEDIUM)">
                     <Icon :icon="getPriorityIcon(PriorityEnum.MEDIUM)" class="mr-1" />
                     {{ getPriorityLabel(PriorityEnum.MEDIUM) }}
                 </DropdownLink>
@@ -68,7 +79,7 @@ const onChangePriority = async (taskId, status) => {
                 <DropdownLink
                     class="text-red-600"
                     :severity="getPriorityToSeverity(PriorityEnum.HIGH)"
-                    @click="onChangePriority(props.task.id, PriorityEnum.HIGH)">
+                    @click="onChangePriority(props.taskId, PriorityEnum.HIGH)">
                     <Icon :icon="getPriorityIcon(PriorityEnum.HIGH)" class="mr-1" />
                     {{ getPriorityLabel(PriorityEnum.HIGH) }}
                 </DropdownLink>

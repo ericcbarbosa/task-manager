@@ -9,12 +9,19 @@ import SeverityEnum from '@/Enums/SeverityEnum';
 import { updateTaskStatus } from '@/Services/TaskSevice';
 import { getStatusLabel } from '@/Helpers/LabelHelper';
 import { getStatusToSeverity } from '@/Helpers/SeverityMapperHelpers';
-import Icon from '../Icon.vue';
+import Icon from '@/Components//Icon.vue';
 import { getStatusIcon } from '@/Helpers/IconHelper';
 
 const props = defineProps({
-    task: {
-        type: Object,
+    status: {
+        type: String,
+        default: StatusEnum.PENDING,
+        validator(value) {
+            return Object.keys(StatusEnum).includes(value);
+        }
+    },
+    taskId: {
+        type: Number,
         required: true,
     },
     width: {
@@ -25,16 +32,20 @@ const props = defineProps({
         type: String,
         default: 'right',
     },
+    makeRequest: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['change-status'])
 
 const onChangeStatus = async (taskId, status) => {
-    if (taskId) {
+    if (taskId && props.makeRequest) {
         await updateTaskStatus(taskId, status);
     }
 
-    emit('change-status');
+    emit('change-status', taskId, status);
 }
 </script>
 
@@ -42,11 +53,9 @@ const onChangeStatus = async (taskId, status) => {
     <div class="relative">
         <Dropdown :align="props.align" :width="props.width">
             <template #trigger>
-                <Tag :severity="getStatusToSeverity(props.task.status)">
-                    <button class="flex flex-row justify-center items-center w-full">
-                        <Icon :icon="getStatusIcon(props.task.status)" class="mr-2" />
-                        {{ getStatusLabel(props.task.status) }}
-                    </button>
+                <Tag :severity="getStatusToSeverity(props.status)">
+                    <Icon :icon="getStatusIcon(props.status)" class="mr-2" />
+                    {{ getStatusLabel(props.status) }}
                 </Tag>
             </template>
 
@@ -54,7 +63,7 @@ const onChangeStatus = async (taskId, status) => {
                 <DropdownLink
                     class="text-slate-600"
                     :severity="SeverityEnum.DEFAULT"
-                    @click="onChangeStatus(props.task.id, StatusEnum.PENDING)">
+                    @click="onChangeStatus(props.taskId, StatusEnum.PENDING)">
                     <Icon :icon="getStatusIcon(StatusEnum.PENDING)" class="mr-1" />
                     {{ getStatusLabel(StatusEnum.PENDING) }}
                 </DropdownLink>
@@ -62,7 +71,7 @@ const onChangeStatus = async (taskId, status) => {
                 <DropdownLink
                     class="text-blue-600"
                     :severity="SeverityEnum.DEFAULT"
-                    @click="onChangeStatus(props.task.id, StatusEnum.IN_PROGRESS)">
+                    @click="onChangeStatus(props.taskId, StatusEnum.IN_PROGRESS)">
                     <Icon :icon="getStatusIcon(StatusEnum.IN_PROGRESS)" class="mr-1" />
                     {{ getStatusLabel(StatusEnum.IN_PROGRESS) }}
                 </DropdownLink>
@@ -70,7 +79,7 @@ const onChangeStatus = async (taskId, status) => {
                 <DropdownLink
                     class="text-green-600"
                     :severity="SeverityEnum.DEFAULT"
-                    @click="onChangeStatus(props.task.id, StatusEnum.COMPLETED)">
+                    @click="onChangeStatus(props.taskId, StatusEnum.COMPLETED)">
                     <Icon :icon="getStatusIcon(StatusEnum.COMPLETED)" class="mr-1" />
                     {{ getStatusLabel(StatusEnum.COMPLETED) }}
                 </DropdownLink>

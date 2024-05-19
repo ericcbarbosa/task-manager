@@ -61,14 +61,16 @@ const onTakeTask = () => {
 
             <section class="border rounded-lg bg-slate-100 border-slate-200 p-2 mt-1 mb-4 flex flex-row items-center justify-between gap-4">
                 <TaskStatusDropdown
-                    :task="props.task"
+                    :taskId="props.task.id"
+                    :status="props.task.status"
                     align="left"
                     width="48"
                     @change-status="emit('change-status')"
                 />
 
                 <TaskPriorityDropdown
-                    :task="props.task"
+                    :task-id="props.task.id"
+                    :priority="props.task.priority"
                     align="right"
                     width="48"
                     @change-priority="emit('change-priority')"

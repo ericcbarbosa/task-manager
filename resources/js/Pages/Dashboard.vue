@@ -189,7 +189,8 @@ watch(changedTask, (newTask) => {
 
                             <td id="task-status" class="w-40 p-4 text-sm font-medium text-gray-900">
                                 <TaskStatusDropdown
-                                    :task="item"
+                                    :taskId="item.id"
+                                    :status="item.status"
                                     @change-status="fetchTasks"
                                 />
                             </td>
