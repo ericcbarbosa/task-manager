@@ -25,6 +25,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    currentUserId: {
+        type: Number,
+        required: true,
+    },
     task: {
         type: Object,
     },
@@ -131,6 +135,7 @@ const onCompleteTask = () => {
                 </Button>
 
                 <Button
+                    v-if="props.currentUserId !== props.task.user.id"
                     :severity="SeverityEnum.INFO"
                     :disabled="loading || localLoading"
                     icon="hand"

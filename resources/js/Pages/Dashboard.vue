@@ -189,13 +189,6 @@ const changedTask = computed(() => {
     }
 });
 
-watch(() => showViewModal.value, () => {
-    if (showViewModal.value === false) {
-        selectedRow.value = null;
-        isEditing.value = false;
-    }
-})
-
 watch(changedTask, (newTask) => {
     selectedRow.value = newTask;
 });
@@ -274,6 +267,7 @@ const isLoadingSomenthing = computed(() => {
                 :show="showViewModal"
                 :task="selectedRow"
                 :is-editing="isEditing"
+                :current-user-id="$page.props.auth.user.id"
                 @close="onCloseViewModal"
                 @delete="onDeleteTask"
                 @take="onTakeOwnershipTask"
