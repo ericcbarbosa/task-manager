@@ -8,6 +8,7 @@ import Avatar from '@/Components/Avatar.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import FloatingButton from '@/Components/Buttons/FloatingButton.vue';
 import Panel from '@/Components/Panel.vue';
+import Icon from '@/Components/Icon.vue';
 import CreateOrEditTaskModal from '@/Components/Modals/CreateOrEditTaskModal.vue';
 import ViewTaskModal from '@/Components/Modals/ViewTaskModal.vue';
 import TaskActionsDropdown from '@/Components/Dropdown/TaskActionsDropdown.vue';
@@ -215,7 +216,7 @@ const isLoadingSomenthing = computed(() => {
 
             <section class="max-w-7xl mx-auto sm:px-6 lg:px-4 py-4 my-4">
                 <Panel :loading="isLoadingSomenthing" class="relative min-h-[350px]">
-                    <Table v-if="data" :headers="headers" :data="data" @row-click="onRowClick">
+                    <Table v-if="data && data?.length > 0" :headers="headers" :data="data" @row-click="onRowClick">
                         <template #row="{ item = {} }">
                             <td id="task-owner" class="w-24 p-4 text-sm font-medium text-gray-900">
                                 <div class="flex flex-col items-center">
@@ -258,6 +259,16 @@ const isLoadingSomenthing = computed(() => {
                             </td>
                         </template>
                     </Table>
+
+                    <div v-if="data.length === 0 && !isLoadingSomenthing" class="p-5 mt-[120px] text-slate-400">
+                        <p class="text-center text-2xl">
+                            No Tasks yet! Time to create one.
+                        </p>
+                        <p class="text-center text-2xl mt-2">
+                            Click on the green button
+                            <Icon icon="arrow-down" class="text-green-700 -rotate-45 opacity-70" />
+                        </p>
+                    </div>
                 </Panel>
             </section>
 
