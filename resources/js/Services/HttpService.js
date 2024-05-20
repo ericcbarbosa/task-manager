@@ -4,6 +4,9 @@ import {ToastService} from "@/Services/ToastService.js";
 
 const HttpService = axios.create({
     baseURL: '',
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+    }
 });
 
 const getErrorMessage = (error) => {
