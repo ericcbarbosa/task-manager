@@ -7,10 +7,6 @@ const HttpService = axios.create({
 });
 
 const getErrorMessage = (error) => {
-    if (error?.response.status === 401) {
-        window.location.href = '/login';
-    }
-
     if (error?.response?.data?.message) {
         if (Array.isArray(error?.response?.data?.message)) {
             return error?.response?.data?.message.join(', ')
@@ -29,6 +25,10 @@ const getErrorMessage = (error) => {
 
     if (error?.response.status === 404) {
         return 'Ops! The data you are trying to get was not found.'
+    }
+
+    if (error?.response.status === 401) {
+        return 'Ops! Your`re not allowed to perform this operation.'
     }
 
     return 'Ops! A error ocurred. Please try again.';
